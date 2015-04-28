@@ -24,7 +24,7 @@
     <div class="header">
         <h1>Timezone</h1>
         <?php
-            if (!isset($_SESSION['username'])) {
+            if (!isset($_SESSION['id'])) {
                 ?>
                 <div class="btn btn-primary" id="button-signup">S'inscrire</div>
                 <div class="btn btn-primary" id="button-signin">Se connecter</div>
@@ -73,22 +73,60 @@
             }
         ?>
     </div>
-    <div class="body">
+    <div class="body col-md-12">
         <?php
-        //            getHorloges($_SESSION['username']);
+            $clocks = array();
+            if (isset($_SESSION['id'])) {
+                $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN affichage ON (affichage.horloge_affichage = horloge.id_horloge) INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) WHERE affichage.utilisateur_affichage = :id");
+                $query->execute();
+                $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
+
+                $colors = array();
+
+            }
+
+            if (empty($clocks)) {
+                $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) WHERE horloge.id_horloge < 4");
+                $query->execute();
+                $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
+            }
+            foreach ($clocks as $clock) {
+                ?>
+                <div class="clock col-md-3">
+                    <div class="clock-city"><?php echo $clock['ville_horloge'] ?></div>
+                    <div class="clock-country"><?php echo $clock['nom_pays'] ?></div>
+                    <div class="clock-date"></div>
+                    <div class="clock-timezone"><?php echo $clock['nom_fuseau'] ?></div>
+                    <div class="clock-timezone-offset"><?php echo $clock['decalage_fuseau'] ?></div>
+                    <div class="clock-clock">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" preserveAspectRatio="xMidYMid meet">
+                            <g>
+                                <circle r="78" cy="80" cx="80" stroke-width="4" stroke="#FFFFFF" fill="none"/>
+                                <line y2="10" x2="80" y1="80" x1="80" stroke-width="3" stroke="#FFFFFF" fill="none" class="minute-hand"/>
+                                <line y2="40" x2="80" y1="80" x1="80" stroke-width="4" stroke="#FFFFFF" fill="none" class="hour-hand"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                <?php
+            }
         ?>
     </div>
     <div class="footer">
         <script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/moment.js"></script>
+        <script type="text/javascript" src="js/moment-timezone-data.js"></script>
+        <script type="text/javascript" src="js/moment-timezone.js"></script>
+
 
         <?php
-            if (!isset($_SESSION['username'])) {
+            if (!isset($_SESSION['id'])) {
                 echo '<script type="text/javascript" src="js/connection.js"></script>';
-            } else {
-//                echo '<script type="text/javascript" src="js/accueil.js"></script>';
             }
+
+            echo '<script type="text/javascript" src="js/accueil.js"></script>';
         ?>
     </div>
 </body>
