@@ -21,13 +21,15 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
-    <div class="header">
+    <div class="header text-center col-md-12" style="margin-bottom: 3%;">
         <h1>Timezone</h1>
         <?php
             if (!isset($_SESSION['id'])) {
                 ?>
-                <div class="btn btn-primary" id="button-signup">S'inscrire</div>
-                <div class="btn btn-primary" id="button-signin">Se connecter</div>
+                <div class="pull-right">
+                    <div class="btn btn-success" id="button-signup">S'inscrire</div>
+                    <div class="btn btn-primary" id="button-signin"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Se connecter</div>
+                </div>
 
                 <div class="modal fade" id="modal-connection">
                     <div class="modal-dialog">
@@ -53,9 +55,11 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default reset-form-connection" data-dismiss="modal">
-                                    Annuler
+                                    <span class="glyphicon glyphicon-remove"></span>&nbsp;Annuler
                                 </button>
-                                <button type="submit" form="form-connection" class="btn btn-primary">Valider</button>
+                                <button type="submit" form="form-connection" class="btn btn-success">
+                                    <span class="glyphicon glyphicon-ok"></span>&nbsp;Valider
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -64,11 +68,16 @@
             }
             else {
                 ?>
-                <div class="btn btn-primary" id="button-manage">Gérer</div>
-                <div class="btn btn-primary" id="button-switch-view">Passer en vue <span id="next-view-name">liste</span></div>
-                <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                    <button type="submit" class="btn btn-primary" id="button-disconnect" name="disconnect">Se déconnecter</button>
-                </form>
+                <div class="pull-left">
+                    <div class="btn btn-default" id="button-switch-view"><span id="glyphicon-view" class="glyphicon glyphicon-list"></span>&nbsp;Passer en vue <span id="next-view-name">liste</span></div>
+                    <div class="btn btn-info" id="button-manage"><span class="glyphicon glyphicon-wrench"></span>&nbsp;Gérer mes horloges</div>
+                </div>
+                <div class="pull-right">
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                        <button type="submit" class="btn btn-primary" id="button-disconnect" name="disconnect">Se déconnecter</button>
+                    </form>
+                </div>
+
                 <?php
             }
         ?>
@@ -119,7 +128,6 @@
         <script type="text/javascript" src="js/moment.js"></script>
         <script type="text/javascript" src="js/moment-timezone-data.js"></script>
         <script type="text/javascript" src="js/moment-timezone.js"></script>
-
 
         <?php
             if (!isset($_SESSION['id'])) {
