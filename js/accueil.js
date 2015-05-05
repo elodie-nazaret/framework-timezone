@@ -52,4 +52,19 @@ $(function () {
             viewName.text('liste');
         }
     });
+
+    $('#modal-gestion').modal({
+        show: false
+    });
+
+    $('#button-manage').click(function() {
+        var modal = $('#modal-gestion');
+        modal.modal('show');
+    });
+
+    $('.reset-form-gestion').click(function() {
+        $('#form-gestion')[0].reset();
+    });
+
+
 });

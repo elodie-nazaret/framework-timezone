@@ -1,6 +1,3 @@
-/**
- * Created by axel on 28/04/2015.
- */
 $(function() {
     $('#modal-connection').modal({
         show: false
