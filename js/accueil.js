@@ -51,5 +51,37 @@ $(function () {
         $('#form-gestion')[0].reset();
     });
 
+    $('#search').keyup( function(){
+        $field = $(this);
+        $('#results').html('');
+        $('#ajax-loader').removeClass('hidden');
 
+        if( $field.val().length > 1 )
+        {
+            $.ajax({
+                type : 'POST',
+                url : 'search.php',
+                data : { search : $(this).val()},
+                success : function(data){
+                    $('#ajax-loader').addClass('hidden');
+                    $('#results').html(data);
+                }
+            });
+        } else if ($field.val().length == 0) {
+            $.ajax({
+                type : 'POST',
+                url : 'search.php',
+                data : { search : null},
+                success : function(data){
+                    $('#ajax-loader').addClass('hidden');
+                    $('#results').html(data);
+                }
+            });
+        }
+    });
+
+    $('.clock').on('click', function() {
+        var modal = $('#modal-gestion');
+        modal.modal('show');
+    });
 });
