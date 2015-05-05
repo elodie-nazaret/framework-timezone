@@ -23,9 +23,10 @@ function updateClock(clockDiv) {
         color = '#413D93';
     }
 
-    svg.find('.minute-hand').attr('transform', 'rotate(' + (date.minutes() * 360 / 60) + ' 80, 80)');
-    svg.find('.hour-hand').attr('transform', 'rotate(' + ((date.hours() * 60 + date.minutes()) * 360 / (24 * 60)) + ' 80, 80)');
+    svg.find('.minute-hand').attr('transform', 'rotate(' + (180 + date.minutes() * 360 / 60) + ' 80, 80)');
+    svg.find('.hour-hand').attr('transform', 'rotate(' + (180 + (date.hours() * 60 + date.minutes()) * 360 / (24 * 60)) + ' 80, 80)');
     $(clockDiv).css('background-color', color);
+    $(clockDiv).find('.clock-date').text(date.format('dddd, MMMM DD, YYYY'));
 
 }
 
@@ -37,4 +38,18 @@ function updateClocks() {
 }
 $(function () {
     updateClocks();
+
+    $('#button-switch-view').click(function() {
+        var clocks = $('.clock');
+        var viewName = $('#next-view-name');
+
+        clocks.toggleClass('clock-grid clock-list');
+        clocks.toggleClass('col-xs-6 col-sm-4 col-xs-12');
+
+        if (viewName.text() == 'liste') {
+            viewName.text('grille');
+        } else {
+            viewName.text('liste');
+        }
+    });
 });

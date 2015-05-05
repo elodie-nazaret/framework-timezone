@@ -19,79 +19,84 @@
     <title>Timezone</title>
     <link rel="stylesheet" href="css/jquery-ui.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/accueil.css">
 </head>
 <body>
-    <div class="header text-center col-md-12" style="margin-bottom: 3%;">
-        <h1>Timezone</h1>
-        <?php
-            if (!isset($_SESSION['id'])) {
-                ?>
-                <div class="pull-right">
-                    <div class="btn btn-success" id="button-signup">S'inscrire</div>
-                    <div class="btn btn-primary" id="button-signin"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Se connecter</div>
-                </div>
+    <div class="header text-center container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Timezone</h1>
+                <?php
+                if (!isset($_SESSION['id'])) {
+                    ?>
+                    <div class="pull-right">
+                        <div class="btn btn-success" id="button-signup">S'inscrire</div>
+                        <div class="btn btn-primary" id="button-signin"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Se connecter</div>
+                    </div>
 
-                <div class="modal fade" id="modal-connection">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close reset-form-connection" data-dismiss="modal" aria-label="Fermer">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <h4 class="modal-title">Connexion</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form id="form-connection" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                                    <div class="form-group">
-                                        <label for="input-username">Nom d'utilisateur</label>
-                                        <input type="text" class="form-control" id="input-username" name="username" pattern="^[a-zA-Z0-9._-]+$" title="Caractères alphanumériques, tiret, underscore ou point autorisés"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="input-password">Mot de passe</label>
-                                        <input type="password" class="form-control" id="input-password" name="password"/>
-                                    </div>
-                                    <input type="hidden" name="type"/>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default reset-form-connection" data-dismiss="modal">
-                                    <span class="glyphicon glyphicon-remove"></span>&nbsp;Annuler
-                                </button>
-                                <button type="submit" form="form-connection" class="btn btn-success">
-                                    <span class="glyphicon glyphicon-ok"></span>&nbsp;Valider
-                                </button>
+                    <div class="modal fade" id="modal-connection">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close reset-form-connection" data-dismiss="modal" aria-label="Fermer">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title">Connexion</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-connection" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                                        <div class="form-group">
+                                            <label for="input-username">Nom d'utilisateur</label>
+                                            <input type="text" class="form-control" id="input-username" name="username" pattern="^[a-zA-Z0-9._-]+$" title="Caractères alphanumériques, tiret, underscore ou point autorisés"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="input-password">Mot de passe</label>
+                                            <input type="password" class="form-control" id="input-password" name="password"/>
+                                        </div>
+                                        <input type="hidden" name="type"/>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default reset-form-connection" data-dismiss="modal">
+                                        <span class="glyphicon glyphicon-remove"></span>&nbsp;Annuler
+                                    </button>
+                                    <button type="submit" form="form-connection" class="btn btn-success">
+                                        <span class="glyphicon glyphicon-ok"></span>&nbsp;Valider
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 <?php
-            }
-            else {
-                ?>
-                <div class="pull-left">
-                    <div class="btn btn-default" id="button-switch-view"><span id="glyphicon-view" class="glyphicon glyphicon-list"></span>&nbsp;Passer en vue <span id="next-view-name">liste</span></div>
-                    <div class="btn btn-info" id="button-manage"><span class="glyphicon glyphicon-wrench"></span>&nbsp;Gérer mes horloges</div>
-                </div>
-                <div class="pull-right">
-                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                        <button type="submit" class="btn btn-primary" id="button-disconnect" name="disconnect">Se déconnecter</button>
-                    </form>
-                </div>
+                }
+                else {
+                    ?>
+                    <div class="pull-left">
+                        <div class="btn btn-default" id="button-switch-view"><span id="glyphicon-view" class="glyphicon glyphicon-list"></span>&nbsp;Passer en vue <span id="next-view-name">liste</span></div>
+                        <div class="btn btn-info" id="button-manage"><span class="glyphicon glyphicon-wrench"></span>&nbsp;Gérer mes horloges</div>
+                    </div>
+                    <div class="pull-right">
+                        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                            <button type="submit" class="btn btn-primary" id="button-disconnect" name="disconnect">Se déconnecter</button>
+                        </form>
+                    </div>
 
                 <?php
-            }
-        ?>
+                }
+                ?>
+            </div>
+        </div>
     </div>
-    <div class="body col-md-12">
+    <div class="body container">
         <?php
             $clocks = array();
+
             if (isset($_SESSION['id'])) {
-                $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN affichage ON (affichage.horloge_affichage = horloge.id_horloge) INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) WHERE affichage.utilisateur_affichage = :id");
-                $query->execute();
+                $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN affichage ON (affichage.horloge_affichage = horloge.id_horloge) INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) WHERE affichage.utilisateur_affichage = :id ORDER BY affichage.ordre_affichage");
+                $query->execute(array(
+                    ':id' => $_SESSION['id']
+                ));
                 $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
-
-                $colors = array();
-
             }
 
             if (empty($clocks)) {
@@ -99,9 +104,10 @@
                 $query->execute();
                 $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
             }
+
             foreach ($clocks as $clock) {
                 ?>
-                <div class="clock col-md-3">
+                <div class="clock col-xs-6 col-sm-4 clock-grid">
                     <div class="clock-city"><?php echo $clock['ville_horloge'] ?></div>
                     <div class="clock-country"><?php echo $clock['nom_pays'] ?></div>
                     <div class="clock-date"></div>
@@ -111,8 +117,8 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" preserveAspectRatio="xMidYMid meet">
                             <g>
                                 <circle r="78" cy="80" cx="80" stroke-width="4" stroke="#FFFFFF" fill="none"/>
-                                <line y2="10" x2="80" y1="80" x1="80" stroke-width="3" stroke="#FFFFFF" fill="none" class="minute-hand"/>
-                                <line y2="40" x2="80" y1="80" x1="80" stroke-width="4" stroke="#FFFFFF" fill="none" class="hour-hand"/>
+                                <rect height="75" width="1" y="75" x="79.75" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" class="minute-hand"/>
+                                <rect height="45" width="2" y="75" x="79.5" rx="2" ry="2" stroke="#FFFFFF" fill="#FFFFFF" class="hour-hand"/>
                             </g>
                         </svg>
                     </div>

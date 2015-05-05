@@ -1,0 +1,43 @@
+body {
+    height: 100vh;
+}
+.header {
+    height: 20%;
+}
+.body {
+    height: 80%;
+}
+
+.clock {
+    height: calc(100% / 3);
+}
+
+.clock-clock {
+    position: absolute;
+}
+.clock-clock>svg {
+    max-width: 100%;
+    height: 100%;
+}
+
+.clock-grid>.clock-city {
+    float: left;
+    margin-right: 5px;
+}
+.clock-grid>.clock-city:after {
+    content: ', ';
+}
+.clock-grid>.clock-clock {
+    left: 20%;
+    right: 20%;
+    bottom: 5px;
+    height: 70%;
+}
+
+.clock-list>.clock-clock {
+    right: 10%;
+    height: 90%;
+    bottom: 5%;
+}
+
+
