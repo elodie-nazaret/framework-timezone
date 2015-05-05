@@ -31,15 +31,6 @@
     <script type="text/javascript" src="js/moment-timezone-data.js"></script>
     <script type="text/javascript" src="js/moment-timezone.js"></script>
 
-    <div class="header text-center col-md-12" style="margin-bottom: 3%;">
-        <h1>Timezone</h1>
-        <?php
-            if (!isset($_SESSION['id'])) {
-                ?>
-                <div class="pull-right">
-                    <div class="btn btn-success" id="button-signup">S'inscrire</div>
-                    <div class="btn btn-primary" id="button-signin"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Se connecter</div>
-                </div>
     <div class="header text-center container">
         <div class="row">
             <div class="col-md-12">
@@ -131,6 +122,7 @@
                 $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
             }
 
+            $clocks =  array_merge($clocks, $clocks, $clocks, $clocks, $clocks);
             foreach ($clocks as $clock) {
                 $weather = file_get_contents('http://api.openweathermap.org/data/2.5/weather?q=' . $clock['ville_horloge'] . '&APPID=87ebbac3eaa1d68a0e59a741fc5ef5c3');
                 $weather = json_decode($weather, true);
@@ -140,7 +132,7 @@
                     <div class="clock-city"><?php echo $clock['ville_horloge'] ?></div>
                     <div class="clock-country"><?php echo $clock['nom_pays'] ?></div>
                     <div class="clock-date"></div>
-                    <div class="clock-timezone"><?php echo $clock['nom_fuseau'] ?></div>
+                    <div class="clock-timezone hidden"><?php echo $clock['nom_fuseau'] ?></div>
                     <div class="clock-timezone-offset"><?php echo $clock['decalage_fuseau'] ?></div>
                     <div class="clock-clock">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" preserveAspectRatio="xMidYMid meet">
@@ -150,9 +142,10 @@
                                 <rect height="45" width="2" y="75" x="79.5" rx="2" ry="2" stroke="#FFFFFF" fill="#FFFFFF" class="hour-hand"/>
                             </g>
                         </svg>
+                        <div class="clock-ampm"></div>
+                        <div class="clock-weather"><img src="http://openweathermap.org/img/w/<?php echo $weather['weather'][0]['icon']; ?>.png" alt="Météo" title="Météo"/></div>
+                        <div class="clock-temp"><?php echo round($weather['main']['temp'] - 273.15, 1) ?> °C</div>
                     </div>
-                    <div class="clock-weather"><img src="http://openweathermap.org/img/w/<?php echo $weather['weather'][0]['icon']; ?>.png" alt="Météo" title="Météo"/></div>
-                    <div class="clock-temp"><?php echo round($weather['main']['temp'] - 273.15, 1) ?> °C</div>
                 </div>
                 <?php
             }

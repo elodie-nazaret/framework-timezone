@@ -27,7 +27,7 @@ function updateClock(clockDiv) {
     svg.find('.hour-hand').attr('transform', 'rotate(' + (180 + (date.hours() * 60 + date.minutes()) * 360 / (24 * 60)) + ' 80, 80)');
     $(clockDiv).css('background-color', color);
     $(clockDiv).find('.clock-date').text(date.format('dddd, MMMM DD, YYYY'));
-
+    $(clockDiv).find('.clock-ampm').text(date.format('A'));
 }
 
 function updateClocks() {

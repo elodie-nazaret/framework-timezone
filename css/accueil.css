@@ -9,15 +9,34 @@ body {
 }
 
 .clock {
-    height: calc(100% / 3);
+    height: 33.33%;
 }
 
 .clock-clock {
     position: absolute;
 }
 .clock-clock>svg {
-    max-width: 100%;
+    max-width: 80%;
     height: 100%;
+}
+.clock-clock>.clock-weather {
+    position: absolute;
+    top: 0px;
+    right: -10%;
+}
+.clock-clock>.clock-weather>img {
+    width: 70px;
+    height: 70px;
+}
+.clock-clock>.clock-temp {
+    position: absolute;
+    top: 0px;
+    right: 10%;
+}
+.clock-clock>.clock-ampm {
+    position: absolute;
+    bottom: 10%;
+    right: 10%;
 }
 
 .clock-grid>.clock-city {
@@ -28,10 +47,9 @@ body {
     content: ', ';
 }
 .clock-grid>.clock-clock {
-    left: 20%;
     right: 20%;
     bottom: 5px;
-    height: 70%;
+    height: 80%;
 }
 
 .clock-list>.clock-clock {
@@ -39,5 +57,3 @@ body {
     height: 90%;
     bottom: 5%;
 }
-
-
