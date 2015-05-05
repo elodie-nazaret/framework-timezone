@@ -114,6 +114,9 @@
                 $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
             }
             foreach ($clocks as $clock) {
+                $weather = file_get_contents('http://api.openweathermap.org/data/2.5/weather?q=' . $clock['ville_horloge'] . '&APPID=87ebbac3eaa1d68a0e59a741fc5ef5c3');
+                $weather = json_decode($weather, true);
+
                 ?>
                 <div class="clock col-md-3">
                     <div class="clock-city"><?php echo $clock['ville_horloge'] ?></div>
@@ -130,6 +133,8 @@
                             </g>
                         </svg>
                     </div>
+                    <div class="clock-weather"><img src="http://openweathermap.org/img/w/<?php echo $weather['weather'][0]['icon']; ?>.png" alt="Météo" title="Météo"/></div>
+                    <div class="clock-temp"><?php echo round($weather['main']['temp'] - 273.15, 1) ?> °C</div>
                 </div>
                 <?php
             }
@@ -144,6 +149,13 @@
                         <h3 class="modal-title">Gérer mes horloges</h3>
                     </div>
                     <div class="modal-body">
+                        <!--<div class="row">
+                            <div class="col-xs-6 col-xs-offset-3">
+                                <form class="searchAjax" action="search.php" method="post">
+
+                                </form>
+                            </div>
+                        </div>-->
                         <div class="row">
                             <div class="col-md-12">
                                 <form id="form-gestion" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -153,10 +165,10 @@
                                     $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
 
                                     foreach ($clocks as $clock) {
-                                        echo '<div class="col-md-10">';
+                                        echo '<div class="col-xs-10">';
                                         echo '<label for="horloge_' . $clock['id_horloge'] . '"><h4>' . $clock['nom_pays'] . ', ' . $clock['ville_horloge'] . ', ' . $clock['decalage_fuseau'] . '</h4></label>';
                                         echo '</div>';
-                                        echo '<div class="col-md-2">';
+                                        echo '<div class="col-xs-2">';
                                         echo '<input type="checkbox" style="transform: scale(1.2); -webkit-transform: scale(1.2);" id="horloge_' . $clock['id_horloge'] . '" name="' . $clock['id_horloge'] . '"';
                                         if (in_array($clock['id_horloge'], $checkedClocks)) {
                                             echo 'checked';
