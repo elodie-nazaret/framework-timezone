@@ -159,34 +159,40 @@
                         <h3 class="modal-title">Gérer mes horloges</h3>
                     </div>
                     <div class="modal-body">
-                        <!--<div class="row">
-                            <div class="col-xs-6 col-xs-offset-3">
+                        <div class="row">
+                            <div class="col-xs-10 col-xs-offset-1">
                                 <form class="searchAjax" action="search.php" method="post">
-
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="search" id="search" placeholder="Rechercher un pays ou une ville"/>
+                                    </div>
+                                    <br/>
                                 </form>
                             </div>
-                        </div>-->
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <form id="form-gestion" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                                    <?php
-                                    $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) ORDER BY pays.nom_pays");
-                                    $query->execute();
-                                    $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
+                                    <img src="images/ajax-loader.gif" alt="loader" class=" hidden center-block" id="ajax-loader" />
+                                    <div id="results">
+                                        <?php
+                                        $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) ORDER BY pays.nom_pays");
+                                        $query->execute();
+                                        $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
 
-                                    foreach ($clocks as $clock) {
-                                        echo '<div class="col-xs-10">';
-                                        echo '<label for="horloge_' . $clock['id_horloge'] . '"><h4>' . $clock['nom_pays'] . ', ' . $clock['ville_horloge'] . ', ' . $clock['decalage_fuseau'] . '</h4></label>';
-                                        echo '</div>';
-                                        echo '<div class="col-xs-2">';
-                                        echo '<input type="checkbox" style="transform: scale(1.2); -webkit-transform: scale(1.2);" id="horloge_' . $clock['id_horloge'] . '" name="' . $clock['id_horloge'] . '"';
-                                        if (in_array($clock['id_horloge'], $checkedClocks)) {
-                                            echo 'checked';
+                                        foreach ($clocks as $clock) {
+                                            echo '<div class="col-xs-10">';
+                                            echo '<label for="horloge_' . $clock['id_horloge'] . '"><h4>' . $clock['nom_pays'] . ', ' . $clock['ville_horloge'] . ', ' . $clock['decalage_fuseau'] . '</h4></label>';
+                                            echo '</div>';
+                                            echo '<div class="col-xs-2">';
+                                            echo '<input type="checkbox" style="transform: scale(1.2); -webkit-transform: scale(1.2);" id="horloge_' . $clock['id_horloge'] . '" name="' . $clock['id_horloge'] . '"';
+                                            if (in_array($clock['id_horloge'], $checkedClocks)) {
+                                                echo 'checked';
+                                            }
+                                            echo '>';
+                                            echo '</div>';
                                         }
-                                        echo '>';
-                                        echo '</div>';
-                                    }
-                                    ?>
+                                        ?>
+                                    </div>
                                 </form>
                             </div>
                         </div>
