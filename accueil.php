@@ -97,59 +97,58 @@
         </div>
     </div>
     <div class="body container">
-        <?php
-            $clocks = array();
-            $checkedClocks = array();
+        <div id="clocks">
+            <?php
+                $clocks = array();
+                $checkedClocks = array();
 
-            if (isset($_SESSION['id'])) {
-                $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN affichage ON (affichage.horloge_affichage = horloge.id_horloge) INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) WHERE affichage.utilisateur_affichage = :id ORDER BY affichage.ordre_affichage");
-                $query->execute(array(
-                    ':id' => $_SESSION['id']
-                ));
-                $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
+                if (isset($_SESSION['id'])) {
+                    $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN affichage ON (affichage.horloge_affichage = horloge.id_horloge) INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) WHERE affichage.utilisateur_affichage = :id ORDER BY affichage.ordre_affichage");
+                    $query->execute(array(
+                        ':id' => $_SESSION['id']
+                    ));
+                    $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
 
-                foreach ($clocks as $clock) {
-                    $checkedClocks[] = $clock['id_horloge'];
+                    foreach ($clocks as $clock) {
+                        $checkedClocks[] = $clock['id_horloge'];
+                    }
                 }
 
-                $colors = array();
+                if (empty($clocks)) {
+                    $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) WHERE horloge.id_horloge < 4");
+                    $query->execute();
+                    $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
+                }
 
-            }
+                foreach ($clocks as $clock) {
+                    $weather = file_get_contents('http://api.openweathermap.org/data/2.5/weather?q=' . $clock['ville_horloge'] . '&APPID=87ebbac3eaa1d68a0e59a741fc5ef5c3');
+                    $weather = json_decode($weather, true);
 
-            if (empty($clocks)) {
-                $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) WHERE horloge.id_horloge < 4");
-                $query->execute();
-                $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
-            }
-
-            $clocks =  array_merge($clocks, $clocks, $clocks, $clocks, $clocks);
-            foreach ($clocks as $clock) {
-                $weather = file_get_contents('http://api.openweathermap.org/data/2.5/weather?q=' . $clock['ville_horloge'] . '&APPID=87ebbac3eaa1d68a0e59a741fc5ef5c3');
-                $weather = json_decode($weather, true);
-
-                ?>
-                <div class="clock col-xs-6 col-sm-4 clock-grid">
-                    <div class="clock-city"><?php echo $clock['ville_horloge'] ?></div>
-                    <div class="clock-country"><?php echo $clock['nom_pays'] ?></div>
-                    <div class="clock-date"></div>
-                    <div class="clock-timezone hidden"><?php echo $clock['nom_fuseau'] ?></div>
-                    <div class="clock-timezone-offset"><?php echo $clock['decalage_fuseau'] ?></div>
-                    <div class="clock-clock">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" preserveAspectRatio="xMidYMid meet">
-                            <g>
-                                <circle r="78" cy="80" cx="80" stroke-width="4" stroke="#FFFFFF" fill="none"/>
-                                <rect height="75" width="1" y="75" x="79.75" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" class="minute-hand"/>
-                                <rect height="45" width="2" y="75" x="79.5" rx="2" ry="2" stroke="#FFFFFF" fill="#FFFFFF" class="hour-hand"/>
-                            </g>
-                        </svg>
-                        <div class="clock-ampm"></div>
-                        <div class="clock-weather"><img src="http://openweathermap.org/img/w/<?php echo $weather['weather'][0]['icon']; ?>.png" alt="Météo" title="Météo"/></div>
-                        <div class="clock-temp"><?php echo round($weather['main']['temp'] - 273.15, 1) ?> °C</div>
+                    ?>
+                    <div class="clock col-xs-6 col-sm-4 clock-grid">
+                        <div class="clock-id hidden"><?php echo $clock['id_horloge'] ?></div>
+                        <div class="clock-city"><?php echo $clock['ville_horloge'] ?></div>
+                        <div class="clock-country"><?php echo $clock['nom_pays'] ?></div>
+                        <div class="clock-date"></div>
+                        <div class="clock-timezone hidden"><?php echo $clock['nom_fuseau'] ?></div>
+                        <div class="clock-timezone-offset"><?php echo $clock['decalage_fuseau'] ?></div>
+                        <div class="clock-clock">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" preserveAspectRatio="xMidYMid meet">
+                                <g>
+                                    <circle r="78" cy="80" cx="80" stroke-width="4" stroke="#FFFFFF" fill="none"/>
+                                    <rect height="75" width="1" y="75" x="79.75" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" class="minute-hand"/>
+                                    <rect height="45" width="2" y="75" x="79.5" rx="2" ry="2" stroke="#FFFFFF" fill="#FFFFFF" class="hour-hand"/>
+                                </g>
+                            </svg>
+                            <div class="clock-ampm"></div>
+                            <div class="clock-weather"><img src="http://openweathermap.org/img/w/<?php echo $weather['weather'][0]['icon']; ?>.png" alt="Météo" title="Météo"/></div>
+                            <div class="clock-temp"><?php echo round($weather['main']['temp'] - 273.15, 1) ?> °C</div>
+                        </div>
                     </div>
-                </div>
-                <?php
-            }
-        ?>
+                    <?php
+                }
+            ?>
+        </div>
         <div class="modal fade" id="modal-gestion">
             <div class="modal-dialog">
                 <div class="modal-content">

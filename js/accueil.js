@@ -39,6 +39,20 @@ function updateClocks() {
 $(function () {
     updateClocks();
 
+    $('#clocks').sortable({
+        tolerance: 'pointer',
+        stop: function(event, ui) {
+            $.ajax({
+                url: './update_order.php',
+                data: {
+                    clockOrder: $(ui.item).index() + 1,
+                    clockId: $(ui.item).find('.clock-id').text()
+                },
+                method: 'POST'
+            });
+        }
+    });
+
     $('#button-switch-view').click(function() {
         var clocks = $('.clock');
         var viewName = $('#next-view-name');

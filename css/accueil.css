@@ -7,7 +7,9 @@ body {
 .body {
     height: 80%;
 }
-
+#clocks {
+    height: 100%;
+}
 .clock {
     height: 33.33%;
 }
