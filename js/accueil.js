@@ -23,19 +23,26 @@ function updateClock(clockDiv) {
         color = '#413D93';
     }
 
-    svg.find('.minute-hand').attr('transform', 'rotate(' + (180 + date.minutes() * 360 / 60) + ' 80, 80)');
-    svg.find('.hour-hand').attr('transform', 'rotate(' + (180 + (date.hours() * 60 + date.minutes()) * 360 / (24 * 60)) + ' 80, 80)');
+    svg.find('.second-hand').attr('transform', 'rotate(' + ((180 + date.seconds() / 60 * 360) % 360) + ' 80, 80)');
+    svg.find('.minute-hand').attr('transform', 'rotate(' + ((180 + date.minutes() / 60 * 360) % 360) + ' 80, 80)');
+    svg.find('.hour-hand').attr('transform', 'rotate(' + ((180 + (date.hours() + date.minutes() / 60) / 12 * 360 ) % 360) + ' 80, 80)');
+
     $(clockDiv).css('background-color', color);
     $(clockDiv).find('.clock-date').text(date.format('dddd, MMMM DD, YYYY'));
     $(clockDiv).find('.clock-ampm').text(date.format('A'));
+
+    $(clockDiv).find('.clock-digital-second').text(date.format('ss'));
+    $(clockDiv).find('.clock-digital-minute').text(date.format('mm'));
+    $(clockDiv).find('.clock-digital-hour').text(date.format('HH'));
 }
 
 function updateClocks() {
     $('.clock').each(function() {
         updateClock(this);
     });
-    setTimeout("updateClocks()", 60 * 1000);
+    setTimeout("updateClocks()", 1000);
 }
+
 $(function () {
     updateClocks();
 
@@ -67,6 +74,18 @@ $(function () {
         }
     });
 
+    $('#button-switch-clock').click(function () {
+        var clockName = $('#next-clock-name');
+
+        $('.clock-analog, .clock-ampm, .clock-digital').toggle();
+
+        if (clockName.text() == 'digitale') {
+            clockName.text('analogique');
+        } else {
+            clockName.text('digitale');
+        }
+    });
+
     $('#modal-gestion').modal({
         show: false
     });
@@ -78,6 +97,15 @@ $(function () {
 
     $('.reset-form-gestion').click(function() {
         $('#form-gestion')[0].reset();
+    });
+
+
+    $('#modal-create-clock').modal({
+        show: false
+    });
+
+    $('#button-create-clock').click(function () {
+        $('#modal-create-clock').modal('show');
     });
 
     $('#search').keyup( function(){

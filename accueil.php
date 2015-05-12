@@ -8,8 +8,9 @@
             session_start();
         } elseif (isset($_POST['submit-gestion'])){
             require 'gestion.php';
-        }
-        else {
+        } elseif (isset($_POST['submit-create-clock'])) {
+            require 'clock-creation.php';
+        } else {
             require 'connection.php';
         }
     }
@@ -82,6 +83,7 @@
                     ?>
                     <div class="pull-left">
                         <div class="btn btn-default" id="button-switch-view"><span id="glyphicon-view" class="glyphicon glyphicon-list"></span>&nbsp;Passer en vue <span id="next-view-name">liste</span></div>
+                        <div class="btn btn-default" id="button-switch-clock"><span id="glyphicon-view" class="glyphicon glyphicon-list"></span>&nbsp;Passer en horloge <span id="next-clock-name">digitale</span></div>
                         <div class="btn btn-info" id="button-manage"><span class="glyphicon glyphicon-wrench"></span>&nbsp;Gérer mes horloges</div>
                     </div>
                     <div class="pull-right">
@@ -133,13 +135,31 @@
                         <div class="clock-timezone hidden"><?php echo $clock['nom_fuseau'] ?></div>
                         <div class="clock-timezone-offset"><?php echo $clock['decalage_fuseau'] ?></div>
                         <div class="clock-clock">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" preserveAspectRatio="xMidYMid meet">
+                            <svg class="clock-analog" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" preserveAspectRatio="xMidYMid meet">
                                 <g>
-                                    <circle r="78" cy="80" cx="80" stroke-width="4" stroke="#FFFFFF" fill="none"/>
-                                    <rect height="75" width="1" y="75" x="79.75" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" class="minute-hand"/>
-                                    <rect height="45" width="2" y="75" x="79.5" rx="2" ry="2" stroke="#FFFFFF" fill="#FFFFFF" class="hour-hand"/>
+                                    <circle r="78" cy="80" cx="80" stroke-width="4" stroke="#FFFFFF" fill="none"></circle>
+                                    <g>
+                                        <rect height="15" width="4" y="10" x="78" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF"></rect>
+                                        <rect height="10" width="2" y="10" x="79" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(30 80, 80)"></rect>
+                                        <rect height="10" width="2" y="10" x="79" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(60 80, 80)"></rect>
+                                        <rect height="15" width="4" y="10" x="78" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(90 80, 80)"></rect>
+                                        <rect height="10" width="2" y="10" x="79" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(120 80, 80)"></rect>
+                                        <rect height="10" width="2" y="10" x="79" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(150 80, 80)"></rect>
+                                        <rect height="15" width="4" y="10" x="78" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(180 80, 80)"></rect>
+                                        <rect height="10" width="2" y="10" x="79" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(210 80, 80)"></rect>
+                                        <rect height="10" width="2" y="10" x="79" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(240 80, 80)"></rect>
+                                        <rect height="15" width="4" y="10" x="78" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(270 80, 80)"></rect>
+                                        <rect height="10" width="2" y="10" x="79" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(300 80, 80)"></rect>
+                                        <rect height="10" width="2" y="10" x="79" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" transform="rotate(330 80, 80)"></rect>
+                                    </g>
+                                    <g>
+                                        <rect height="75" width="1" y="70" x="79.5" rx="1" ry="1" stroke="#FFFFFF" fill="#FFFFFF" class="second-hand"></rect>
+                                        <rect height="60" width="2" y="70" x="79" rx="2" ry="2" stroke="#FFFFFF" fill="#FFFFFF" class="minute-hand"></rect>
+                                        <rect height="45" width="3" y="70" x="78.5" rx="3" ry="3" stroke="#FFFFFF" fill="#FFFFFF" class="hour-hand"></rect>
+                                    </g>
                                 </g>
                             </svg>
+                            <div class="clock-digital"><span class="clock-digital-hour">10</span>:<span class="clock-digital-minute">15</span>:<span class="clock-digital-second">20</span></div>
                             <div class="clock-ampm"></div>
                             <div class="clock-weather"><img src="http://openweathermap.org/img/w/<?php echo $weather['weather'][0]['icon']; ?>.png" alt="Météo" title="Météo"/></div>
                             <div class="clock-temp"><?php echo round($weather['main']['temp'] - 273.15, 1) ?> °C</div>
@@ -172,7 +192,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <form id="form-gestion" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                                    <img src="images/ajax-loader.gif" alt="loader" class=" hidden center-block" id="ajax-loader" />
+                                    <img src="images/ajax-loader.gif" alt="loader" class=" hidden center-block" id="ajax-loader"/>
                                     <div id="results">
                                         <?php
                                         $query = pdo_connection::getPdo()->prepare("SELECT * FROM horloge INNER JOIN fuseau ON (fuseau.id_fuseau = horloge.fuseau_horloge) INNER JOIN pays ON (pays.id_pays = horloge.pays_horloge) ORDER BY pays.nom_pays");
@@ -198,10 +218,65 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button class="btn btn-info reset-form-gestion" id="button-create-clock" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-wrench"></span>&nbsp;Créer une horloge
+                        </button>
                         <button type="button" class="btn btn-default reset-form-gestion" data-dismiss="modal">
                             <span class="glyphicon glyphicon-remove"></span>&nbsp;Annuler
                         </button>
                         <button type="submit" class="btn btn-success" form="form-gestion" name="submit-gestion">
+                            <span class="glyphicon glyphicon-ok"></span>&nbsp;Valider
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-create-clock">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close reset-form-create-clock" data-dismiss="modal" aria-label="Fermer">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title">Créer une horloge</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-create-clock" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                            <img src="images/ajax-loader.gif" alt="loader" class="hidden center-block" id="ajax-loader"/>
+                            <div class="form-group">
+                                <label>Veuillez saisir une ville</label>
+                                <input type="text" class="form-control" name="city" placeholder="Veuillez saisir une ville" required/>
+                            </div>
+                            <div class="form-group">
+                                <label>Veuillez sélectionner un pays</label>
+                                <select class="form-control" name="country">
+                                    <?php
+                                    $countryResult  = pdo_connection::getPdo()->query("SELECT * FROM pays ORDER BY nom_pays");
+                                    while($country = $countryResult->fetch()) {
+                                        echo '<option value="' . $country['id_pays'] . '">' . $country['nom_pays'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Veuillez sélectionner un fuseau horaire</label>
+                                <select class="form-control" name="timezone">
+                                    <?php
+                                    $timezoneResult = pdo_connection::getPdo()->query("SELECT * FROM (SELECT * FROM fuseau WHERE decalage_fuseau LIKE '%-%' ORDER BY decalage_fuseau DESC) neg UNION SELECT * FROM (SELECT * FROM fuseau WHERE decalage_fuseau LIKE '%+%' ORDER BY decalage_fuseau) pos");
+                                    while($timezone = $timezoneResult->fetch()) {
+                                        echo '<option value="' . $timezone['id_fuseau'] . '">' . $timezone['nom_fuseau'] . ' ' . $timezone['decalage_fuseau'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default reset-form-create-clock" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove"></span>&nbsp;Annuler
+                        </button>
+                        <button type="submit" class="btn btn-success" form="form-create-clock" name="submit-create-clock">
                             <span class="glyphicon glyphicon-ok"></span>&nbsp;Valider
                         </button>
                     </div>

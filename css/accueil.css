@@ -1,3 +1,7 @@
+@font-face {
+    font-family: 'ds-digi';
+    src: url("../fonts/DS-DIGI.TTF");
+}
 body {
     height: 100vh;
 }
@@ -7,13 +11,17 @@ body {
 .body {
     height: 80%;
 }
+#results {
+    overflow: auto;
+    max-height: 50vh;
+}
 #clocks {
     height: 100%;
 }
 .clock {
     height: 33.33%;
+    color: white;
 }
-
 .clock-clock {
     position: absolute;
 }
@@ -55,7 +63,15 @@ body {
 }
 
 .clock-list>.clock-clock {
-    right: 10%;
-    height: 90%;
-    bottom: 5%;
+right: 10%;
+height: 90%;
+bottom: 5%;
+}
+
+.clock-clock>.clock-digital {
+    font-family: ds-digi;
+    display: none;
+    margin-top: 20%;
+    margin-left: -25%;
+    font-size: 4.5em;
 }
