@@ -137,8 +137,31 @@ $(function () {
         }
     });
 
+    $('.detail').hide();
     $('.clock').on('click', function() {
-        var modal = $('#modal-gestion');
-        modal.modal('show');
+        var clock = $(this);
+
+        $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + clock.find('.clock-city').text() + '&APPID=87ebbac3eaa1d68a0e59a741fc5ef5c3', function(data){
+           $('.detail-humidity').text('Humidité : ' + data['main']['humidity'] + '%');
+           $('.detail-pressure').text('Pression : ' + (data['main']['pressure']).toFixed() + ' hPa');
+           $('.detail-temp-min').text('Température min : ' + (data['main']['temp_min'] - 273.15).toFixed(1) + '°C');
+           $('.detail-temp-max').text('Température max : ' + (data['main']['temp_max'] - 273.15).toFixed(1) + '°C');
+           $('.detail-wind').text('Vent : ' + (data['wind']['speed'] * 3.6).toFixed(2) + ' km/h');
+        });
+
+
+        $('.detail-city').text(clock.find('.clock-city').text());
+        $('.detail-country').text(clock.find('.clock-country').text());
+        $('.detail-date').text(clock.find('.clock-date').text());
+        $('.detail-timezone-offset').text(clock.find('.clock-timezone-offset').text());
+        $('.detail-temp-current').text('Température actuelle : ' + clock.find('.clock-temp').text());
+        $('.detail-weather').html('Météo : ' + clock.find('.clock-weather').html());
+        //$('.detail-clock').html(clock.find('.clock-clock>svg').html());
+        //$('.detail-clock').html('');
+        //$('.clock-clock>svg').clone().appendTo('.detail-clock');
+
+        $('.detail').show();
     });
+
+    $('')
 });

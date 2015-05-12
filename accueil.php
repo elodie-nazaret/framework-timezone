@@ -169,6 +169,32 @@
                 }
             ?>
         </div>
+        <div class="detail">
+            <div class="row">
+                <div class="detail-head col-xs-12 text-center">
+                    <div class="detail-city"></div>
+                    <div class="detail-country"></div>
+                    <div class="detail-date"></div>
+                    <div class="detail-timezone-offset"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="detail-body col-xs-12">
+                    <div class="detail-body-left pull-left col-xs-7">
+                        <div class="detail-clock"></div>
+                    </div>
+                    <div class="detail-body-right col-xs-5 text-right">
+                        <div class="detail-weather"></div>
+                        <div class="detail-temp-current"></div>
+                        <div class="detail-humidity"></div>
+                        <div class="detail-pressure"></div>
+                        <div class="detail-temp-min"></div>
+                        <div class="detail-temp-max"></div>
+                        <div class="detail-wind"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="modal-gestion">
             <div class="modal-dialog">
                 <div class="modal-content">
