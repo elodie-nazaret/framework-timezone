@@ -1,24 +1,53 @@
 <?php
 namespace timezone\entities;
 
-class View {
+class View
+{
     private $id;
     private $user;
     private $clock;
     private $order;
+
+    const TABLE_VIEW = 'affichage';
+    const COL_ID     = 'id_affichage';
+    const COL_CLOCK  = 'horloge_affichage';
+    const COL_USER   = 'utilisateur_affichage';
+    const COL_ORDER  = 'ordre_affichage';
 
     /**
      * @param int $id
      * @param User $user
      * @param Clock $clock
      * @param int $order
+     *
+     * @return View
      */
-    function __construct($id, User $user, Clock $clock, $order)
+    public static function withId($id, User $user, Clock $clock, $order)
     {
-        $this->id = $id;
-        $this->user = $user;
-        $this->clock = $clock;
-        $this->order = $order;
+        $view = new View();
+        $view->setId($id);
+        $view->setUser($user);
+        $view->setClock($clock);
+        $view->setOrder($order);
+
+        return $view;
+    }
+
+    /**
+     * @param User $user
+     * @param Clock $clock
+     * @param int $order
+     *
+     * @return View
+     */
+    public static function withoutId(User $user, Clock $clock, $order)
+    {
+        $view = new View();
+        $view->setUser($user);
+        $view->setClock($clock);
+        $view->setOrder($order);
+
+        return $view;
     }
 
     /**
@@ -27,6 +56,14 @@ class View {
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**

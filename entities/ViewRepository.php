@@ -4,15 +4,15 @@ namespace timezone\entities;
 use PDO;
 use timezone\connection\pdo_connection;
 
-class ViewRepository implements InterfaceRepository{
-
+class ViewRepository implements InterfaceRepository
+{
     /**
      * @param int $id
      * @return View
      */
     public static function findById($id)
     {
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM affichage WHERE id_affichage = :id");
+        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " = :id");
 
         $query->execute(array(
             ':id' =>$id
@@ -37,7 +37,7 @@ class ViewRepository implements InterfaceRepository{
             $values[':' . $key] = $value;
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM utilisateur WHERE " . implode(' AND ', $where));
+        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW . " WHERE " . implode(' AND ', $where));
         $query->execute($values);
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -51,14 +51,91 @@ class ViewRepository implements InterfaceRepository{
     }
 
     /**
+     * @return array
+     */
+    public static function findAll()
+    {
+        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW);
+        $query->execute();
+
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        $views = array();
+
+        foreach ($results as $result) {
+            $views[] = self::createView($result);
+        }
+
+        return $views;
+    }
+
+    /**
+     * @param View $view
+     *
+     * @return bool
+     */
+    public static function insert($view)
+    {
+        if ($view instanceof View) {
+            $query = pdo_connection::getPdo()->prepare("INSERT INTO " . View::TABLE_VIEW . "(" . View::COL_CLOCK . ", " . View::COL_ORDER . ", " . View::COL_USER .") VALUES (:clock, :orderView, :userId)");
+
+            return $query->execute(array(
+                ':clock'     => $view->getClock()->getId(),
+                ':orderView' => $view->getOrder(),
+                ':userId'    => $view->getUser()->getId()
+            ));
+        }
+
+        return false;
+    }
+
+    /**
+     * @param View $view
+     *
+     * @return bool
+     */
+    public static function update($view)
+    {
+        if ($view instanceof View) {
+            $query = pdo_connection::getPdo()->prepare("UPDATE " . View::TABLE_VIEW . " SET " . View::COL_CLOCK . " = :clock, " . View::COL_ORDER . " = :orderView, " . View::COL_USER . " = :userId WHERE " . View::COL_ID . " = :id");
+
+            return $query->execute(array(
+                ':clock'     => $view->getClock()->getId(),
+                ':orderView' => $view->getOrder(),
+                ':userId'    => $view->getUser()->getId(),
+                ':id'        => $view->getId()
+            ));
+        }
+        return false;
+    }
+
+    /**
+     * @param View $view
+     *
+     * @return bool
+     */
+    public static function delete($view)
+    {
+        if ($view instanceof View) {
+            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " = :id");
+
+            return $query->execute(array(
+                ':id' => $view->getId()
+            ));
+        }
+
+        return false;
+    }
+
+    /**
      * @param array $result
      * @return View
      */
-    private static function createView($result) {
-        $user   = UserRepository::findById($result['utilisateur_affichage']);
-        $clock  = ClockRepository::findById($result['horloge_affichage']);
+    private static function createView($result)
+    {
+        $view   = ViewRepository::findById($result[View::COL_USER]);
+        $clock  = ClockRepository::findById($result[View::COL_CLOCK]);
 
-        $view = new View($result['id_affichage'], $user, $clock, $result['ordre_affichage']);
+        $view = new View($result[View::COL_ID], $view, $clock, $result[View::COL_ORDER]);
 
         return $view;
     }

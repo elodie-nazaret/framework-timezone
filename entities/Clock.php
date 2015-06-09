@@ -1,26 +1,54 @@
 <?php
 namespace timezone\entities;
 
-class Clock {
+class Clock
+{
     private $id;
     private $town;
     private $country;
     private $timezone;
-    private $views;
+    private $views = array();
+
+    const TABLE_CLOCK   = 'horloge';
+    const COL_ID        = 'id_horloge';
+    const COL_TOWN      = 'ville_horloge';
+    const COL_COUNTRY   = 'pays_horloge';
+    const COL_TIMEZONE  = 'fuseau_horloge';
 
     /**
-     * @param int $id
-     * @param string $town
+     * @param $town
      * @param Country $country
      * @param Timezone $timezone
+     *
+     * @return Clock
      */
-    function __construct($id, $town, Country $country, Timezone $timezone)
+    public static function withoutId($town, Country $country, Timezone $timezone)
     {
-        $this->id = $id;
-        $this->town = $town;
-        $this->country = $country;
-        $this->timezone = $timezone;
-        $this->views = array();
+        $clock = new Clock();
+        $clock->setTown($town);
+        $clock->setCountry($country);
+        $clock->setTimezone($timezone);
+
+        return $clock;
+    }
+
+    /**
+     * @param $id
+     * @param $town
+     * @param Country $country
+     * @param Timezone $timezone
+     *
+     * @return Clock
+     */
+    public static function withId($id, $town, Country $country, Timezone $timezone)
+    {
+        $clock = new Clock();
+        $clock->setId($id);
+        $clock->setTown($town);
+        $clock->setCountry($country);
+        $clock->setTimezone($timezone);
+
+        return $clock;
     }
 
     /**
@@ -29,6 +57,14 @@ class Clock {
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**

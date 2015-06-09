@@ -1,23 +1,48 @@
 <?php
 namespace timezone\entities;
 
-class User {
+class User
+{
     private $id;
     private $login;
     private $password;
-    private $views;
+    private $views = array();
+
+    const TABLE_USER   = 'utilisateur';
+    const COL_ID       = 'id_utilisateur';
+    const COL_LOGIN    = 'login_utilisateur';
+    const COL_PASSWORD = 'password_utilisateur';
 
     /**
      * @param int $id
      * @param string $login
      * @param string $password
+     *
+     * @return User
      */
-    function __construct($id, $login, $password)
+    public static function withId($id, $login, $password)
     {
-        $this->id = $id;
-        $this->login = $login;
-        $this->password = $password;
-        $this->views = array();
+        $user = new User();
+        $user->setId($id);
+        $user->setLogin($login);
+        $user->setPassword($password);
+
+        return $user;
+    }
+
+    /**
+     * @param string $login
+     * @param string $password
+     *
+     * @return User
+     */
+    public static function withoutId($login, $password)
+    {
+        $user = new User();
+        $user->setLogin($login);
+        $user->setPassword($password);
+
+        return $user;
     }
 
     /**
@@ -26,6 +51,14 @@ class User {
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
