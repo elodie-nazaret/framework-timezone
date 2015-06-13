@@ -1,23 +1,48 @@
 <?php
 namespace timezone\entities;
 
-class Timezone {
+class Timezone
+{
     private $id;
     private $name;
     private $offset;
-    private $clocks;
+    private $clocks = array();
+
+    const TABLE_TIMEZONE = 'fuseau';
+    const COL_ID        = 'id_fuseau';
+    const COL_NAME      = 'nom_fuseau';
+    const COL_OFFSET    = 'decalage_fuseau';
 
     /**
      * @param int $id
      * @param string $name
      * @param string $offset
+     *
+     * @return Timezone
      */
-    function __construct($id, $name, $offset)
+    public static function withId($id, $name, $offset)
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->offset = $offset;
-        $this->clocks = array();
+        $timezone = new Timezone();
+        $timezone->setId($id);
+        $timezone->setName($name);
+        $timezone->setOffset($offset);
+
+        return $timezone;
+    }
+
+    /**
+     * @param string $name
+     * @param string $offset
+     *
+     * @return Timezone
+     */
+    public static function withoutId($name, $offset)
+    {
+        $timezone = new Timezone();
+        $timezone->setName($name);
+        $timezone->setOffset($offset);
+
+        return $timezone;
     }
 
     /**
@@ -26,6 +51,14 @@ class Timezone {
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**

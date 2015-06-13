@@ -1,19 +1,42 @@
 <?php
 namespace timezone\entities;
 
-class Country {
+class Country
+{
     private $id;
     private $name;
-    private $clocks;
+    private $clocks = array();
+
+    const TABLE_COUNTRY = 'pays';
+    const COL_ID        = 'id_pays';
+    const COL_NAME      = 'nom_pays';
 
     /**
      * @param int $id
      * @param string $name
+     *
+     * @return Country
      */
-    public function __construct($id, $name) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->clocks = array();
+    public static function withId($id, $name)
+    {
+        $country = new Country();
+        $country->setId($id);
+        $country->setName($name);
+
+        return $country;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Country
+     */
+    public static function withoutId($name)
+    {
+        $country = new Country();
+        $country->setName($name);
+
+        return $country;
     }
 
     /**
@@ -22,6 +45,14 @@ class Country {
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
