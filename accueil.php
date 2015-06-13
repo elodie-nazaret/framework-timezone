@@ -1,6 +1,10 @@
 <?php
-    session_start();
-    require_once 'pdo_connection.php';
+namespace timezone;
+
+use PDO;
+use timezone\connection\pdo_connection;
+
+session_start();
 
     if (!empty($_POST)) {
         if (isset($_POST['disconnect'])) {
@@ -11,7 +15,7 @@
         } elseif (isset($_POST['submit-create-clock'])) {
             require 'clock-creation.php';
         } else {
-            require 'connection.php';
+            require 'connection_old.php';
         }
     }
 ?>

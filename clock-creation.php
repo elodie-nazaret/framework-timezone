@@ -1,5 +1,7 @@
 <?php
-require_once 'pdo_connection.php';
+namespace timezone;
+
+use timezone\connection\pdo_connection;
 
 if (isset($_POST['city']) && !empty($_POST['city']) && isset($_POST['country']) && !empty($_POST['country']) && isset($_POST['timezone']) && !empty($_POST['timezone'])) {
 

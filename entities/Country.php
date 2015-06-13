@@ -73,4 +73,12 @@ class Country {
             array_splice($this->clocks, $id, 1);
         }
     }
+
+    /**
+     * @return string
+     */
+    public function toOption()
+    {
+        return "<option value=\"{$this->id}\">{$this->name}</option>";
+    }
 }

@@ -93,4 +93,12 @@ class Timezone {
             array_splice($this->clocks, $id, 1);
         }
     }
+
+    /**
+     * @return string
+     */
+    function toOption()
+    {
+        return "<option value=\"{$this->id}\">{$this->name} {$this->offset}</option>";
+    }
 }

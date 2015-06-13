@@ -61,7 +61,7 @@ class User {
     }
 
     /**
-     * @return array
+     * @return View[]
      */
     public function getViews()
     {
@@ -69,7 +69,7 @@ class User {
     }
 
     /**
-     * @param array $views
+     * @param View[] $views
      */
     public function setViews($views)
     {

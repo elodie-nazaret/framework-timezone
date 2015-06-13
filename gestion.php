@@ -1,35 +1,39 @@
 <?php
+    namespace timezone;
 
-$pdo = pdo_connection::getPdo();
-$query = $pdo->prepare("SELECT * FROM horloge INNER JOIN affichage ON (affichage.horloge_affichage = horloge.id_horloge) WHERE affichage.utilisateur_affichage = :id");
-$query->execute(array(':id' => $_SESSION['id']));
-$clocks = $query->fetchAll(PDO::FETCH_ASSOC);
+    use PDO;
+    use timezone\connection\pdo_connection;
 
-$wanted = array_keys($_POST);
-unset($wanted[array_search('submit-gestion', $wanted)]);
+    $pdo = pdo_connection::getPdo();
+    $query = $pdo->prepare("SELECT * FROM horloge INNER JOIN affichage ON (affichage.horloge_affichage = horloge.id_horloge) WHERE affichage.utilisateur_affichage = :id");
+    $query->execute(array(':id' => $_SESSION['id']));
+    $clocks = $query->fetchAll(PDO::FETCH_ASSOC);
 
-$maxOrder  = 0;
-$clocksIds = array();
+    $wanted = array_keys($_POST);
+    unset($wanted[array_search('submit-gestion', $wanted)]);
 
-foreach ($clocks as $clock) {
-    $clocksIds[] = $clock['id_horloge'];
+    $maxOrder  = 0;
+    $clocksIds = array();
 
-    if (!in_array($clock['id_horloge'], $wanted)) {
-        $query = $pdo->prepare("DELETE FROM affichage WHERE horloge_affichage = :horloge AND utilisateur_affichage = :utilisateur");
-        $query->execute(array(':horloge' => $clock['id_horloge'], ':utilisateur' => $_SESSION['id']));
+    foreach ($clocks as $clock) {
+        $clocksIds[] = $clock['id_horloge'];
 
-        $query = $pdo->prepare("UPDATE affichage SET ordre_affichage = ordre_affichage - 1 WHERE utilisateur_affichage = :utilisateur and ordre_affichage > :ordre");
-        $query->execute(array(':utilisateur' => $_SESSION['id'], ':ordre' => $clock['ordre_affichage']));
+        if (!in_array($clock['id_horloge'], $wanted)) {
+            $query = $pdo->prepare("DELETE FROM affichage WHERE horloge_affichage = :horloge AND utilisateur_affichage = :utilisateur");
+            $query->execute(array(':horloge' => $clock['id_horloge'], ':utilisateur' => $_SESSION['id']));
 
-        $maxOrder--;
+            $query = $pdo->prepare("UPDATE affichage SET ordre_affichage = ordre_affichage - 1 WHERE utilisateur_affichage = :utilisateur and ordre_affichage > :ordre");
+            $query->execute(array(':utilisateur' => $_SESSION['id'], ':ordre' => $clock['ordre_affichage']));
+
+            $maxOrder--;
+        }
+        $maxOrder++;
     }
-    $maxOrder++;
-}
 
-foreach ($wanted as $wantedClock) {
-    if (!in_array($wantedClock, $clocksIds)) {
-        $query = $pdo->prepare("INSERT INTO affichage VALUES (:utilisateur, :horloge, :ordre )");
-        $query->execute(array(':utilisateur' => $_SESSION['id'], ':horloge' => $wantedClock, ':ordre' => ++$maxOrder));
+    foreach ($wanted as $wantedClock) {
+        if (!in_array($wantedClock, $clocksIds)) {
+            $query = $pdo->prepare("INSERT INTO affichage VALUES (:utilisateur, :horloge, :ordre )");
+            $query->execute(array(':utilisateur' => $_SESSION['id'], ':horloge' => $wantedClock, ':ordre' => ++$maxOrder));
+        }
     }
-}
 

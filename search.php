@@ -1,7 +1,10 @@
 <?php
+namespace timezone;
+
+use PDO;
+use timezone\connection\pdo_connection;
 
 session_start();
-require_once 'pdo_connection.php';
 
 $query = pdo_connection::getPdo()->prepare("SELECT id_horloge FROM horloge INNER JOIN affichage ON (affichage.horloge_affichage = horloge.id_horloge) WHERE affichage.utilisateur_affichage = :id");
 $query->execute(array(':id' => $_SESSION['id']));
