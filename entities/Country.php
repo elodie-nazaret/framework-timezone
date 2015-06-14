@@ -1,6 +1,9 @@
 <?php
 namespace timezone\entities;
 
+/**
+ * Class Country
+ */
 class Country
 {
     private $id;
@@ -14,29 +17,11 @@ class Country
     /**
      * @param int $id
      * @param string $name
-     *
-     * @return Country
      */
-    public static function withId($id, $name)
+    public function __construct($id, $name)
     {
-        $country = new Country();
-        $country->setId($id);
-        $country->setName($name);
-
-        return $country;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return Country
-     */
-    public static function withoutId($name)
-    {
-        $country = new Country();
-        $country->setName($name);
-
-        return $country;
+        $this->id   = $id;
+        $this->name = $name;
     }
 
     /**

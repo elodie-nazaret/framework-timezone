@@ -1,6 +1,9 @@
 <?php
 namespace timezone\entities;
 
+/**
+ * Class Clock
+ */
 class Clock
 {
     private $id;
@@ -16,39 +19,13 @@ class Clock
     const COL_TIMEZONE  = 'fuseau_horloge';
 
     /**
-     * @param $town
-     * @param Country $country
-     * @param Timezone $timezone
-     *
-     * @return Clock
+     * @param int $id
+     * @param string $town
      */
-    public static function withoutId($town, Country $country, Timezone $timezone)
+    public function __construct($id, $town)
     {
-        $clock = new Clock();
-        $clock->setTown($town);
-        $clock->setCountry($country);
-        $clock->setTimezone($timezone);
-
-        return $clock;
-    }
-
-    /**
-     * @param $id
-     * @param $town
-     * @param Country $country
-     * @param Timezone $timezone
-     *
-     * @return Clock
-     */
-    public static function withId($id, $town, Country $country, Timezone $timezone)
-    {
-        $clock = new Clock();
-        $clock->setId($id);
-        $clock->setTown($town);
-        $clock->setCountry($country);
-        $clock->setTimezone($timezone);
-
-        return $clock;
+        $this->id   = $id;
+        $this->town = $town;
     }
 
     /**
