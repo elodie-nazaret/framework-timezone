@@ -137,8 +137,8 @@ class UserRepository implements InterfaceRepository
      */
     private static function createUser($result) {
 
-        if (isset(self::$user[$result[User::COL_ID]])) {
-            return self::$user[$result[User::COL_ID]];
+        if (isset(self::$users[$result[User::COL_ID]])) {
+            return self::$users[$result[User::COL_ID]];
 
         }
 

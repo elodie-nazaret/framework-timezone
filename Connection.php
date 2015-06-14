@@ -29,6 +29,7 @@ class Connection {
     {
         if (isset($_SESSION['id'])) {
             $this->connected = true;
+            $this->user = UserRepository::findById($_SESSION['id']);
         }
         else {
             $this->connected = false;
