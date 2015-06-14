@@ -2,28 +2,39 @@
     <div id="clocks">
         {{tiles}}
     </div>
-    <div class="detail">
-        <div class="row">
-            <div class="detail-head col-xs-12 text-center">
-                <div class="detail-city"></div>
-                <div class="detail-country"></div>
-                <div class="detail-date"></div>
-                <div class="detail-timezone-offset"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="detail-body col-xs-12">
-                <div class="detail-body-left pull-left col-xs-7">
-                    <div class="detail-clock"></div>
+    <div class="modal fade" id="modal-details">
+        <div class="modal-dialog">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="modal-title">
+                        <span class="detail-city"></span>
+                        <span class="detail-country"></span>
+                    </h3>
+                    <h4 class="modal-title">
+                        <span class="detail-date"></span>
+                        <span class="detail-timezone-offset"></span>
+                    </h4>
                 </div>
-                <div class="detail-body-right col-xs-5 text-right">
-                    <div class="detail-weather"></div>
-                    <div class="detail-temp-current"></div>
-                    <div class="detail-humidity"></div>
-                    <div class="detail-pressure"></div>
-                    <div class="detail-temp-min"></div>
-                    <div class="detail-temp-max"></div>
-                    <div class="detail-wind"></div>
+                <div class="modal-body" id="modal-details-content">
+                    <div class="row">
+                        <div class="detail-body col-xs-12">
+                            <div class="detail-body-left pull-left col-xs-7">
+                                <div class="detail-clock"></div>
+                            </div>
+                            <div class="detail-body-right col-xs-5 text-right">
+                                <div class="detail-weather"></div>
+                                <div class="detail-temp-current"></div>
+                                <div class="detail-humidity"></div>
+                                <div class="detail-pressure"></div>
+                                <div class="detail-temp-min"></div>
+                                <div class="detail-temp-max"></div>
+                                <div class="detail-wind"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

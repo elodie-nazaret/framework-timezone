@@ -63,4 +63,21 @@ class Controller
             $order++;
         }
     }
+
+    public function getWeather()
+    {
+        $city       = $_POST['city'];
+        $country    = $_POST['country'];
+        $weather    = new Weather($city, $country);
+
+        return json_encode(array(
+            'humidity' => $weather->getHumidity(),
+            'pressure' => $weather->getPressure(),
+            'minTemp'  => $weather->getMinTemp(),
+            'maxTemp'  => $weather->getMaxTemp(),
+            'wind'     => $weather->getWind(),
+            'icon'     => $weather->getIcon(),
+            'temp'     => $weather->getCurrentTemp()
+        ));
+    }
 }

@@ -67,10 +67,14 @@ $(function () {
         clocks.toggleClass('clock-grid clock-list');
         clocks.toggleClass('col-xs-6 col-sm-4 col-xs-12');
 
-        if (viewName.text() == 'liste') {
-            viewName.text('grille');
+        if (viewName.hasClass('glyphicon-th')) {
+            viewName.removeClass('glyphicon-th');
+            viewName.addClass('glyphicon-th-list');
+            viewName.attr('title', 'Passer en vue liste').tooltip('fixTitle').tooltip('show');
         } else {
-            viewName.text('liste');
+            viewName.removeClass('glyphicon-th-list');
+            viewName.addClass('glyphicon-th');
+            viewName.attr('title', 'Passer en vue grille').tooltip('fixTitle').tooltip('show');
         }
     });
 
@@ -79,14 +83,38 @@ $(function () {
 
         $('.clock-analog, .clock-ampm, .clock-digital').toggle();
 
-        if (clockName.text() == 'digitale') {
-            clockName.text('analogique');
+        if (clockName.hasClass('glyphicon-time')) {
+            clockName.removeClass('glyphicon-time');
+            clockName.html('<span style="font-family: ds-digi; font-size: 1em">12:00</span>');
+            clockName.attr('title', 'Passer en horloge digitale').tooltip('fixTitle').tooltip('show');
         } else {
-            clockName.text('digitale');
+            clockName.addClass('glyphicon-time');
+            clockName.html('');
+            clockName.attr('title', 'Passer en horloge analogique').tooltip('fixTitle').tooltip('show');
         }
     });
 
+    $('#button-refresh').click(function () {
+        $('.clock').each(function() {
+            var clock = $(this);
+            $.ajax({
+                type : 'POST',
+                url : 'weather_ajax.php',
+                dataType: 'JSON',
+                data : { city : clock.find('.clock-city').text(), country : clock.find('.clock-country').text()},
+                success : function(data){
+                    clock.find('.clock-weather').html(data['icon']);
+                    clock.find('.clock-temp').html(data['temp']);
+                }
+            });
+        });
+    });
+
     $('#modal-gestion').modal({
+        show: false
+    });
+
+    $('#modal-details').modal({
         show: false
     });
 
@@ -137,18 +165,24 @@ $(function () {
         }
     });
 
-    $('.detail').hide();
+    $('[data-toggle="tooltip"]').tooltip()
+
     $('.clock').on('click', function() {
         var clock = $(this);
 
-        $.getJSON('http://api.openweathermap.org/data/2.5/weather?q=' + clock.find('.clock-city').text() + '&APPID=87ebbac3eaa1d68a0e59a741fc5ef5c3', function(data){
-           $('.detail-humidity').text('Humidité : ' + data['main']['humidity'] + '%');
-           $('.detail-pressure').text('Pression : ' + (data['main']['pressure']).toFixed() + ' hPa');
-           $('.detail-temp-min').text('Température min : ' + (data['main']['temp_min'] - 273.15).toFixed(1) + '°C');
-           $('.detail-temp-max').text('Température max : ' + (data['main']['temp_max'] - 273.15).toFixed(1) + '°C');
-           $('.detail-wind').text('Vent : ' + (data['wind']['speed'] * 3.6).toFixed(2) + ' km/h');
+        $.ajax({
+            type : 'POST',
+            url : 'weather_ajax.php',
+            dataType: 'JSON',
+            data : { city : clock.find('.clock-city').text(), country : clock.find('.clock-country').text()},
+            success : function(data){
+                $('.detail-humidity').text('Humidité : ' + data['humidity']);
+                $('.detail-pressure').text('Pression : ' + data['pressure']);
+                $('.detail-temp-min').text('Température min : ' + data['minTemp']);
+                $('.detail-temp-max').text('Température max : ' + data['maxTemp']);
+                $('.detail-wind').text('Vent : ' + data['wind']);
+            }
         });
-
 
         $('.detail-city').text(clock.find('.clock-city').text());
         $('.detail-country').text(clock.find('.clock-country').text());
@@ -160,7 +194,9 @@ $(function () {
         //$('.detail-clock').html('');
         //$('.clock-clock>svg').clone().appendTo('.detail-clock');
 
-        $('.detail').show();
+        $('#modal-details-content').css('background-color', clock.css('background-color'));
+        $('#modal-details-content').css('color', 'white');
+        $('#modal-details').modal('show');
     });
 
     $('')

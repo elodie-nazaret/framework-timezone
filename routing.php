@@ -8,4 +8,8 @@
             $homepage = new Homepage();
             echo $homepage->toHtml();
             break;
+        case 'weather_ajax':
+            $controller = new Controller();
+            echo $controller->getWeather();
+            break;
     }

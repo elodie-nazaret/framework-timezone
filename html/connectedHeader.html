@@ -1,7 +1,8 @@
 <div class="pull-left">
-    <div class="btn btn-default" id="button-switch-view"><span class="glyphicon glyphicon-list"></span>&nbsp;Passer en vue <span id="next-view-name">liste</span></div>
-    <div class="btn btn-default" id="button-switch-clock"><span class="glyphicon glyphicon-list"></span>&nbsp;Passer en horloge <span id="next-clock-name">digitale</span></div>
-    <div class="btn btn-info" id="button-manage"><span class="glyphicon glyphicon-wrench"></span>&nbsp;Gérer mes horloges</div>
+    <div class="btn btn-default btn-lg" id="button-switch-view"><span class="glyphicon glyphicon-th-list" id="next-view-name" data-toggle="tooltip" data-placement="top" title="Passer en vue liste"></span></div>
+    <div class="btn btn-default btn-lg" id="button-switch-clock"><span class="glyphicon" id="next-clock-name" data-toggle="tooltip" data-placement="top" title="Passer en horloge digitale"><span style="font-family: ds-digi; font-size: 1em">12:00</span></span></div>
+    <div class="btn btn-info btn-lg" id="button-manage" title="Gérer mes horloges" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-wrench"></span></div>
+    <div class="btn btn-success btn-lg" id="button-refresh" title="Rafraîchir la météo" data-toggle="tooltip" data-placement="top"><span class="glyphicon glyphicon-refresh"></span></div>
 </div>
 <div class="pull-right">
     <form method="post" action="{{target}}">
