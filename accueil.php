@@ -1,6 +1,11 @@
 <?php
 namespace timezone;
 
+require 'autoload.php';
+
+$homepage = new Homepage();
+echo $homepage->toHtml();
+exit;
 use PDO;
 use timezone\connection\pdo_connection;
 

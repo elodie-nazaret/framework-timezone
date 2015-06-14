@@ -6,12 +6,17 @@ use timezone\connection\pdo_connection;
 
 class ClockRepository implements InterfaceRepository
 {
+    private static $clocks = array();
     /**
      * @param int $id
      * @return Clock
      */
     public static function findById($id)
     {
+        if (isset(self::$clocks[$id])) {
+            return self::$clocks[$id];
+        }
+
         $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Clock::TABLE_CLOCK . " WHERE " . Clock::COL_ID . " = :id");
 
         $query->execute(array(
@@ -25,7 +30,7 @@ class ClockRepository implements InterfaceRepository
 
     /**
      * @param array $parameters
-     * @return array
+     * @return Clock[]
      */
     public static function findBy(array $parameters)
     {
@@ -37,6 +42,8 @@ class ClockRepository implements InterfaceRepository
             $values[':' . $key] = $value;
         }
 
+//        debug_print_backtrace();
+//        echo '<br /><br /><br />';
         $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Clock::TABLE_CLOCK . " WHERE " . implode(' AND ', $where));
         $query->execute($values);
 
@@ -51,7 +58,7 @@ class ClockRepository implements InterfaceRepository
     }
 
     /**
-     * @return array
+     * @return Clock[]
      */
     public static function findAll()
     {
@@ -131,12 +138,16 @@ class ClockRepository implements InterfaceRepository
      * @return Clock
      */
     private static function createClock($result) {
-        $country    = CountryRepository::findById($result[Clock::COL_COUNTRY]);
-        $timezone   = TimezoneRepository::findById($result[Clock::COL_TIMEZONE]);
-        $views      = ViewRepository::findBy(array(View::COL_CLOCK => $result[Clock::COL_ID]));
+        if (isset(self::$clocks[$result[Clock::COL_ID]])) {
+            return self::$clocks[$result[Clock::COL_ID]];
+        }
 
-        $clock = Clock::withId($result[Clock::COL_ID], $result[Clock::COL_TOWN], $country, $timezone);
-        $clock->setViews($views);
+        $clock = new Clock($result[Clock::COL_ID], $result[Clock::COL_TOWN]);
+        self::$clocks[$clock->getId()] = $clock;
+
+        $clock->setCountry(CountryRepository::findById($result[Clock::COL_COUNTRY]));
+        $clock->setTimezone(TimezoneRepository::findById($result[Clock::COL_TIMEZONE]));
+        $clock->setViews(ViewRepository::findBy(array(View::COL_CLOCK => $result[Clock::COL_ID])));
 
         return $clock;
     }

@@ -6,12 +6,19 @@ use timezone\connection\pdo_connection;
 
 class UserRepository implements InterfaceRepository
 {
+
+    private static $users = array();
+
     /**
      * @param int $id
      * @return User
      */
     public static function findById($id)
     {
+        if (isset(self::$users[$id])) {
+            return self::$users[$id];
+        }
+
         $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . User::TABLE_USER . " WHERE " . User::COL_ID . " = :id");
 
         $query->execute(array(
@@ -25,7 +32,7 @@ class UserRepository implements InterfaceRepository
 
     /**
      * @param array $parameters
-     * @return array
+     * @return User[]
      */
     public static function findBy(array $parameters)
     {
@@ -51,7 +58,7 @@ class UserRepository implements InterfaceRepository
     }
 
     /**
-     * @return array
+     * @return User[]
      */
     public static function findAll()
     {
@@ -129,10 +136,16 @@ class UserRepository implements InterfaceRepository
      * @return User
      */
     private static function createUser($result) {
-        $views = ViewRepository::findBy(array(View::COL_USER => $result[User::COL_ID]));
+
+        if (isset(self::$user[$result[User::COL_ID]])) {
+            return self::$user[$result[User::COL_ID]];
+
+        }
 
         $user = new User($result[User::COL_ID], $result[User::COL_LOGIN], $result[User::COL_PASSWORD]);
-        $user->setViews($views);
+        self::$users[$user->getId()] = $user;
+
+        $user->setViews(ViewRepository::findBy(array(View::COL_USER => $result[User::COL_ID])));
 
         return $user;
     }

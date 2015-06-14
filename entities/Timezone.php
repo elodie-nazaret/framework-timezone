@@ -94,7 +94,7 @@ class Timezone
     }
 
     /**
-     * @return array
+     * @return Clock[}
      */
     public function getClocks()
     {
@@ -102,7 +102,7 @@ class Timezone
     }
 
     /**
-     * @param array $clocks
+     * @param Clock[} $clocks
      */
     public function setClocks($clocks)
     {

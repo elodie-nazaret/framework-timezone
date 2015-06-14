@@ -4,7 +4,9 @@ namespace timezone\entities;
 use PDO;
 use timezone\connection\pdo_connection;
 
-class TimezoneRepository implements InterfaceRepository{
+class TimezoneRepository implements InterfaceRepository
+{
+    private static $timezones = array();
 
     /**
      * @param int $id
@@ -12,6 +14,10 @@ class TimezoneRepository implements InterfaceRepository{
      */
     public static function findById($id)
     {
+        if (isset(self::$timezones[$id])) {
+            return self::$timezones[$id];
+        }
+
         $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_ID . " = :id");
 
         $query->execute(array(
@@ -25,7 +31,7 @@ class TimezoneRepository implements InterfaceRepository{
 
     /**
      * @param array $parameters
-     * @return array
+     * @return Timezone[]
      */
     public static function findBy(array $parameters)
     {
@@ -51,7 +57,7 @@ class TimezoneRepository implements InterfaceRepository{
     }
 
     /**
-     * @return array
+     * @return timezone[]
      */
     public static function findAll()
     {
@@ -130,10 +136,14 @@ class TimezoneRepository implements InterfaceRepository{
      */
     private static function createTimezone($result)
     {
-        $clocks = ClockRepository::findBy(array(Clock::COL_TIMEZONE => $result[Timezone::COL_ID]));
+        if (isset(self::$timezones[$result[Timezone::COL_ID]])) {
+            return self::$timezones[$result[Timezone::COL_ID]];
+        }
 
         $timezone = new Timezone($result[Timezone::COL_ID], $result[Timezone::COL_NAME], $result[Timezone::COL_OFFSET]);
-        $timezone->setClocks($clocks);
+        self::$timezones[$timezone->getId()] = $timezone;
+
+        $timezone->setClocks(ClockRepository::findBy(array(Clock::COL_TIMEZONE => $result[Timezone::COL_ID])));
 
         return $timezone;
     }

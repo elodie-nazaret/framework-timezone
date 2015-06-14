@@ -72,7 +72,7 @@ class Country
     }
 
     /**
-     * @return array
+     * @return Clock[]
      */
     public function getClocks()
     {
@@ -80,7 +80,7 @@ class Country
     }
 
     /**
-     * @param array $clocks
+     * @param Clock[] $clocks
      */
     public function setClocks($clocks)
     {

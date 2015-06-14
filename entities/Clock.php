@@ -118,7 +118,7 @@ class Clock
     }
 
     /**
-     * @return array
+     * @return View[]
      */
     public function getViews()
     {
@@ -126,7 +126,7 @@ class Clock
     }
 
     /**
-     * @param array $views
+     * @param View[] $views
      */
     public function setViews($views)
     {

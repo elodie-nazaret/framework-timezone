@@ -6,12 +6,17 @@ use timezone\connection\pdo_connection;
 
 class CountryRepository implements InterfaceRepository
 {
+    private static $countries = array();
     /**
      * @param int $id
      * @return Country
      */
     public static function findById($id)
     {
+        if (isset(self::$countries[$id])) {
+            return self::$countries[$id];
+        }
+
         $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Country::TABLE_COUNTRY . " WHERE " . Country::COL_ID . " = :id");
 
         $query->execute(array(
@@ -25,7 +30,7 @@ class CountryRepository implements InterfaceRepository
 
     /**
      * @param array $parameters
-     * @return array
+     * @return Country[]
      */
     public static function findBy(array $parameters)
     {
@@ -51,7 +56,7 @@ class CountryRepository implements InterfaceRepository
     }
 
     /**
-     * @return array
+     * @return Country[]
      */
     public static function findAll()
     {
@@ -128,10 +133,14 @@ class CountryRepository implements InterfaceRepository
      */
     private static function createCountry($result)
     {
-        $clocks = ClockRepository::findBy(array(Clock::COL_COUNTRY => $result[Country::COL_ID]));
+        if (isset(self::$countries[$result[Country::COL_ID]])) {
+            return self::$countries[$result[Country::COL_ID]];
+        }
 
         $country = new Country($result[Country::COL_ID], $result[Country::COL_NAME]);
-        $country->setClocks($clocks);
+        self::$countries[$country->getId()] = $country;
+
+        $country->setClocks(ClockRepository::findBy(array(Clock::COL_COUNTRY => $result[Country::COL_ID])));
 
         return $country;
     }

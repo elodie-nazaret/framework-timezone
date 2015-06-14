@@ -6,12 +6,18 @@ use timezone\connection\pdo_connection;
 
 class ViewRepository implements InterfaceRepository
 {
+    private static $views = array();
+
     /**
      * @param int $id
      * @return View
      */
     public static function findById($id)
     {
+        if (isset(self::$views[$id])) {
+            return self::$views[$id];
+        }
+
         $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " = :id");
 
         $query->execute(array(
@@ -25,7 +31,7 @@ class ViewRepository implements InterfaceRepository
 
     /**
      * @param array $parameters
-     * @return array
+     * @return View[]
      */
     public static function findBy(array $parameters)
     {
@@ -51,7 +57,7 @@ class ViewRepository implements InterfaceRepository
     }
 
     /**
-     * @return array
+     * @return View[]
      */
     public static function findAll()
     {
@@ -132,10 +138,15 @@ class ViewRepository implements InterfaceRepository
      */
     private static function createView($result)
     {
-        $view   = ViewRepository::findById($result[View::COL_USER]);
-        $clock  = ClockRepository::findById($result[View::COL_CLOCK]);
+        if (isset(self::$views[$result[View::COL_ID]])) {
+            return self::$views[$result[View::COL_ID]];
+        }
 
-        $view = new View($result[View::COL_ID], $view, $clock, $result[View::COL_ORDER]);
+        $view = new View($result[View::COL_ID], $result[View::COL_ORDER]);
+        self::$views[$view->getId()] = $view;
+
+        $view->setUser(UserRepository::findById($result[View::COL_USER]));
+        $view->setClock(ClockRepository::findById($result[View::COL_CLOCK]));
 
         return $view;
     }
