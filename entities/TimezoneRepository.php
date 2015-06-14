@@ -89,10 +89,11 @@ class TimezoneRepository implements InterfaceRepository
         if ($timezone instanceof Timezone) {
             $query = pdo_connection::getPdo()->prepare("INSERT INTO " . Timezone::TABLE_TIMEZONE . "(" . Timezone::COL_NAME . ", " . Timezone::COL_OFFSET .") VALUES (:nameTimezone, :offset)");
 
-            return $query->execute(array(
-                ':nameTimezone' => $timezone->getName(),
-                ':offset'       => $timezone->getOffset()
-            ));
+            if ($query->execute(array(':nameTimezone' => $timezone->getName(), ':offset' => $timezone->getOffset()))) {
+                $timezone->setId((int) pdo_connection::getPdo()->lastInsertId());
+
+                return true;
+            }
         }
 
         return false;
