@@ -39,8 +39,13 @@ class ViewRepository implements InterfaceRepository
         $values = array();
 
         foreach ($parameters as $key => $value) {
-            $where[] = $key . ' = :' . $key;
-            $values[':' . $key] = $value;
+            if (is_array($value)) {
+                $where[]            = $key . ' ' . $value['operator'] . ' :' . $key;
+                $values[':' . $key] = $value['value'];
+            } else {
+                $where[]            = $key . ' = :' . $key;
+                $values[':' . $key] = $value;
+            }
         }
 
         $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW . " WHERE " . implode(' AND ', $where));

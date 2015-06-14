@@ -1,5 +1,6 @@
 <?php
 namespace timezone\entities;
+use timezone\Weather;
 
 /**
  * Class Clock
@@ -134,12 +135,7 @@ class Clock
      */
     public function toTile()
     {
-//        $weather = WeatherApi()::getWeather($this->town);
-//        $meteoIcon = $weather['weather'][0]['icon'];
-//        $temperature = round($weather['main']['temp'] - 273.15, 1);
-
-        $meteoIcon = '';
-        $temperature = 10;
+        $weather = new Weather($this->town, $this->country->getName());
 
         return <<<TILE
 <div class="clock col-xs-6 col-sm-4 clock-grid">
@@ -176,8 +172,8 @@ class Clock
         </svg>
         <div class="clock-digital"><span class="clock-digital-hour">10</span>:<span class="clock-digital-minute">15</span>:<span class="clock-digital-second">20</span></div>
         <div class="clock-ampm"></div>
-        <div class="clock-weather"><img src="http://openweathermap.org/img/w/{$meteoIcon}.png" alt="Météo" title="Météo"/></div>
-        <div class="clock-temp">{$temperature} °C</div>
+        <div class="clock-weather">{$weather->getIcon()}</div>
+        <div class="clock-temp">{$weather->getCurrentTemp()}</div>
     </div>
 </div>
 TILE;

@@ -6,7 +6,9 @@ use timezone\entities\UserRepository;
 
 session_start();
 
-
+/**
+ * Class Connection
+ */
 class Connection {
     private $connected;
     private $user;
@@ -109,6 +111,4 @@ class Connection {
     {
         return $this->user;
     }
-
-
 }

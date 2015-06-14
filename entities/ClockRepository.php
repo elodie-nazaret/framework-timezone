@@ -38,8 +38,13 @@ class ClockRepository implements InterfaceRepository
         $values = array();
 
         foreach ($parameters as $key => $value) {
-            $where[] = $key . ' = :' . $key;
-            $values[':' . $key] = $value;
+            if (is_array($value)) {
+                $where[]            = $key . ' ' . $value['operator'] . ' :' . $key;
+                $values[':' . $key] = $value['value'];
+            } else {
+                $where[]            = $key . ' = :' . $key;
+                $values[':' . $key] = $value;
+            }
         }
 
 //        debug_print_backtrace();

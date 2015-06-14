@@ -40,8 +40,13 @@ class UserRepository implements InterfaceRepository
         $values = array();
 
         foreach ($parameters as $key => $value) {
-            $where[] = $key . ' = :' . $key;
-            $values[':' . $key] = $value;
+            if (is_array($value)) {
+                $where[]            = $key . ' ' . $value['operator'] . ' :' . $key;
+                $values[':' . $key] = $value['value'];
+            } else {
+                $where[]            = $key . ' = :' . $key;
+                $values[':' . $key] = $value;
+            }
         }
 
         $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . User::TABLE_USER . " WHERE " . implode(' AND ', $where));
@@ -137,8 +142,8 @@ class UserRepository implements InterfaceRepository
      */
     private static function createUser($result) {
 
-        if (isset(self::$user[$result[User::COL_ID]])) {
-            return self::$user[$result[User::COL_ID]];
+        if (isset(self::$users[$result[User::COL_ID]])) {
+            return self::$users[$result[User::COL_ID]];
 
         }
 
