@@ -88,9 +88,11 @@ class CountryRepository implements InterfaceRepository
         if ($country instanceof Country) {
             $query = pdo_connection::getPdo()->prepare("INSERT INTO " . Country::TABLE_COUNTRY . "(" . Country::COL_NAME . ") VALUES (:nameCountry)");
 
-            return $query->execute(array(
-                ':nameCountry' => $country->getName()
-            ));
+            if ($query->execute(array(':nameCountry' => $country->getName()))) {
+                $country->setId((int) pdo_connection::getPdo()->lastInsertId());
+
+                return true;
+            }
         }
 
         return false;

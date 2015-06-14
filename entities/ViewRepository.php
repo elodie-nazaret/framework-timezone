@@ -89,11 +89,11 @@ class ViewRepository implements InterfaceRepository
         if ($view instanceof View) {
             $query = pdo_connection::getPdo()->prepare("INSERT INTO " . View::TABLE_VIEW . "(" . View::COL_CLOCK . ", " . View::COL_ORDER . ", " . View::COL_USER .") VALUES (:clock, :orderView, :userId)");
 
-            return $query->execute(array(
-                ':clock'     => $view->getClock()->getId(),
-                ':orderView' => $view->getOrder(),
-                ':userId'    => $view->getUser()->getId()
-            ));
+            if ($query->execute(array(':clock' => $view->getClock()->getId(), ':orderView' => $view->getOrder(), ':userId' => $view->getUser()->getId()))) {
+                $view->setId((int) pdo_connection::getPdo()->lastInsertId());
+
+                return true;
+            }
         }
 
         return false;

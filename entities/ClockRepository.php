@@ -90,11 +90,11 @@ class ClockRepository implements InterfaceRepository
         if ($clock instanceof Clock) {
             $query = pdo_connection::getPdo()->prepare("INSERT INTO " . Clock::TABLE_CLOCK . "(" . Clock::COL_TOWN . ", " . Clock::COL_COUNTRY . ", " . Clock::COL_TIMEZONE . ") VALUES (:town, :country, :timezone)");
 
-            return $query->execute(array(
-                ':town'     => $clock->getTown(),
-                ':country'  => $clock->getCountry()->getId(),
-                ':timezone' => $clock->getTimezone()->getId()
-            ));
+            if ($query->execute(array(':town' => $clock->getTown(),':country'  => $clock->getCountry()->getId(),':timezone' => $clock->getTimezone()->getId()))) {
+                $clock->setId((int) pdo_connection::getPdo()->lastInsertId());
+
+                return true;
+            }
         }
 
         return false;
