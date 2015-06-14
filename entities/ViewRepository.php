@@ -120,17 +120,28 @@ class ViewRepository implements InterfaceRepository
     }
 
     /**
-     * @param View $view
+     * @param View[]|View $views
      *
      * @return bool
      */
-    public static function delete($view)
+    public static function delete($views)
     {
-        if ($view instanceof View) {
-            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " = :id");
+        if (!is_array($views)) {
+            $views = array($views);
+        }
+
+        $toDelete = array();
+        foreach ($views as $view) {
+            if ($view instanceof View) {
+                $toDelete[] = $view->getId();
+            }
+        }
+
+        if (!empty($toDelete)) {
+            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " IN (:id)");
 
             return $query->execute(array(
-                ':id' => $view->getId()
+                ':id' => implode(", ", $toDelete)
             ));
         }
 

