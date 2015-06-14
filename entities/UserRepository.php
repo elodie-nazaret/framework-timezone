@@ -90,10 +90,11 @@ class UserRepository implements InterfaceRepository
         if ($user instanceof User) {
             $query = pdo_connection::getPdo()->prepare("INSERT INTO " . User::TABLE_USER . "(" . User::COL_LOGIN . ", " . User::COL_PASSWORD .") VALUES (:login, :password)");
 
-            return $query->execute(array(
-                ':login'    => $user->getLogin(),
-                ':password' => $user->getPassword()
-            ));
+            if ($query->execute(array(':login' => $user->getLogin(), ':password' => $user->getPassword()))) {
+                $user->setId((int) pdo_connection::getPdo()->lastInsertId());
+
+                return true;
+            }
         }
 
         return false;
