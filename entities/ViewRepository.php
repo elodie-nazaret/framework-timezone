@@ -138,11 +138,8 @@ class ViewRepository implements InterfaceRepository
         }
 
         if (!empty($toDelete)) {
-            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " IN (:id)");
-
-            return $query->execute(array(
-                ':id' => implode(", ", $toDelete)
-            ));
+            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " IN (" .  implode(", ", $toDelete) . ")");
+            return $query->execute();
         }
 
         return false;

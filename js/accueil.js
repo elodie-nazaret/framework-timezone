@@ -136,33 +136,20 @@ $(function () {
         $('#modal-create-clock').modal('show');
     });
 
-    $('#search').keyup( function(){
-        $field = $(this);
-        $('#results').html('');
-        $('#ajax-loader').removeClass('hidden');
+    $('#search').keyup( function() {
+        var fieldValue = $(this).val().toLowerCase();
 
-        if( $field.val().length > 1 )
-        {
-            $.ajax({
-                type : 'POST',
-                url : 'search.php',
-                data : { search : $(this).val()},
-                success : function(data){
-                    $('#ajax-loader').addClass('hidden');
-                    $('#results').html(data);
-                }
-            });
-        } else if ($field.val().length == 0) {
-            $.ajax({
-                type : 'POST',
-                url : 'search.php',
-                data : { search : null},
-                success : function(data){
-                    $('#ajax-loader').addClass('hidden');
-                    $('#results').html(data);
-                }
-            });
-        }
+        $('#results>div').show();
+        $('#results h4').each(function() {
+
+            var text = $(this).text().toLowerCase().split(', ');
+
+            if (text[0].indexOf(fieldValue) == -1 && text[1].indexOf(fieldValue) == -1) {
+                $(this).parent().parent().parent().hide();
+            }
+
+        });
+
     });
 
     $('[data-toggle="tooltip"]').tooltip()
