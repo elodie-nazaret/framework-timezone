@@ -80,8 +80,8 @@ class Connection {
     public function signin($login, $password)
     {
         $user = UserRepository::findBy(array(
-            "login_utilisateur" => $login,
-            "password_utilisateur" => $password
+            User::COL_LOGIN     => $login,
+            User::COL_PASSWORD  => $password
         ));
 
         if (sizeof($user) == 1) {
@@ -93,9 +93,9 @@ class Connection {
      * @param User $user
      */
     private function connect(User $user) {
-        $this->isConnected(true);
-        $this->user = $user;
-        $_SESSION['id']= $user->getId();
+        $this->connected    = true;
+        $this->user         = $user;
+        $_SESSION['id']     = $user->getId();
     }
 
     /**

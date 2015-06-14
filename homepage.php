@@ -76,7 +76,7 @@ class Homepage {
      * @return string
      */
     public function generateHeader() {
-        $header = HtmlTemplate::getTemplate((Connection::getInstance()->isConnected() ? 'connectedHeader' : 'nonConnectedHeader'), array(
+        $header = HtmlTemplate::getTemplate((Connection::getInstance()->isConnected() ? 'connectedHeader' : 'notConnectedHeader'), array(
             'target'    => $_SERVER['PHP_SELF']
         ));
 
