@@ -1,6 +1,9 @@
 <?php
 namespace timezone\entities;
 
+/**
+ * Class View
+ */
 class View
 {
     private $id;
@@ -16,38 +19,12 @@ class View
 
     /**
      * @param int $id
-     * @param User $user
-     * @param Clock $clock
      * @param int $order
-     *
-     * @return View
      */
-    public static function withId($id, User $user, Clock $clock, $order)
+    public function __construct($id, $order)
     {
-        $view = new View();
-        $view->setId($id);
-        $view->setUser($user);
-        $view->setClock($clock);
-        $view->setOrder($order);
-
-        return $view;
-    }
-
-    /**
-     * @param User $user
-     * @param Clock $clock
-     * @param int $order
-     *
-     * @return View
-     */
-    public static function withoutId(User $user, Clock $clock, $order)
-    {
-        $view = new View();
-        $view->setUser($user);
-        $view->setClock($clock);
-        $view->setOrder($order);
-
-        return $view;
+        $this->id       = $id;
+        $this->order    = $order;
     }
 
     /**

@@ -1,6 +1,9 @@
 <?php
 namespace timezone\entities;
 
+/**
+ * Class User
+ */
 class User
 {
     private $id;
@@ -17,32 +20,12 @@ class User
      * @param int $id
      * @param string $login
      * @param string $password
-     *
-     * @return User
      */
-    public static function withId($id, $login, $password)
+    public function __construct($id, $login, $password)
     {
-        $user = new User();
-        $user->setId($id);
-        $user->setLogin($login);
-        $user->setPassword($password);
-
-        return $user;
-    }
-
-    /**
-     * @param string $login
-     * @param string $password
-     *
-     * @return User
-     */
-    public static function withoutId($login, $password)
-    {
-        $user = new User();
-        $user->setLogin($login);
-        $user->setPassword($password);
-
-        return $user;
+        $this->id       = $id;
+        $this->login    = $login;
+        $this->password = $password;
     }
 
     /**
@@ -54,7 +37,7 @@ class User
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      */
     public function setId($id)
     {
