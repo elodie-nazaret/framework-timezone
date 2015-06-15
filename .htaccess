@@ -1,0 +1,18 @@
+Order deny,allow
+Deny from all
+
+<FilesMatch "^.*(?<!\.php)$">
+	Allow from all
+</FilesMatch>
+
+<FilesMatch "^.+/[^\.]+$">
+	Allow from all
+</FilesMatch>
+
+<FilesMatch "routing\.php$" >
+	Allow from all
+</FilesMatch>
+
+Options +FollowSymlinks
+RewriteEngine on
+RewriteRule ^((.+/)*[^\.]+)$ /timezone/routing.php?url=$1 [QSA] [L]

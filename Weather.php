@@ -24,8 +24,12 @@ class Weather
         $this->city     = $city;
         $this->country  = $country;
 
-        $weather        = file_get_contents(self::BASE_API . '?q=' . $city . ',' . $country . '&APPID=' . self::APPID);
-        $weather        = json_decode($weather, true);
+        try {
+            $weather = @file_get_contents(self::BASE_API . '?q=' . $city . ',' . $country . '&APPID=' . self::APPID, true);
+        } catch(\Exception $e) {
+            echo $e->getMessage();
+        }
+        $weather = json_decode($weather, true);
 
         if (isset($weather['message']) && $weather['cod'] == '404') {
             $this->weather = null;

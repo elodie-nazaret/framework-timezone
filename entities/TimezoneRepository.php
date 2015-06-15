@@ -79,6 +79,21 @@ class TimezoneRepository implements InterfaceRepository
         return $timezones;
     }
 
+    public static function query($queryString)
+    {
+        $query = pdo_connection::getPdo()->prepare($queryString);
+        $query->execute();
+
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        $timezones = array();
+
+        foreach ($results as $result) {
+            $timezones[] = self::createTimezone($result);
+        }
+
+        return $timezones;
+    }
+
     /**
      * @param Timezone $timezone
      *

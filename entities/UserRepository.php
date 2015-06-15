@@ -151,8 +151,27 @@ class UserRepository implements InterfaceRepository
         $user = new User($result[User::COL_ID], $result[User::COL_LOGIN], $result[User::COL_PASSWORD]);
         self::$users[$user->getId()] = $user;
 
-        $user->setViews(ViewRepository::findBy(array(View::COL_USER => $result[User::COL_ID])));
+        $views = ViewRepository::findBy(array(View::COL_USER => $result[User::COL_ID]));
+        usort($views, array('timezone\entities\UserRepository', 'test'));
+        $user->setViews($views);
 
         return $user;
+    }
+
+    /**
+     * @param View $a
+     * @param View $b
+     * @return int
+     */
+    private static  function  test($a, $b) {
+        if ($a->getOrder() == $b->getOrder()) {
+            return 0;
+        }
+        elseif ($a->getOrder() > $b->getOrder()) {
+            return 1;
+        }
+        else {
+            return -1;
+        }
     }
 }
