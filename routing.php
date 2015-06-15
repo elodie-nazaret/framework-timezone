@@ -13,6 +13,9 @@
                 $controller = new Controller();
                 $controller->createClock();
             }
+            elseif (isset($_POST['disconnect'])) {
+                Connection::getInstance()->disconnect();
+            }
             $homepage = new Homepage();
             echo $homepage->toHtml();
             break;

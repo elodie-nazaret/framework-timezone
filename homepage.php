@@ -4,8 +4,11 @@ namespace timezone;
 use timezone\entities\Clock;
 use timezone\entities\ClockRepository;
 use timezone\entities\CountryRepository;
+use timezone\entities\Timezone;
 use timezone\entities\TimezoneRepository;
 use timezone\entities\User;
+use timezone\entities\View;
+use timezone\entities\ViewRepository;
 
 class Homepage {
     const BASE_CLOCKS = [1,2,3];
@@ -25,8 +28,9 @@ class Homepage {
         }
     }
 
-    private function addBaseClocks() {
-        foreach (Homepage::BASE_CLOCKS as $clockId) {
+    private function addBaseClocks()
+    {
+        foreach (Homepage::BASE_CLOCKS as $clockId){
             $this->clocks[] = ClockRepository::findById($clockId);
         }
     }
@@ -34,8 +38,21 @@ class Homepage {
     /**
      * @param User $user
      */
-    private function addUserClocks(User $user) {
+    private function addUserClocks(User $user)
+    {
         $views = $user->getViews();
+
+        if (empty($views)) {
+            $order = 0;
+            foreach (Homepage::BASE_CLOCKS as $clockId) {
+                $view = new View(0, ++$order);
+                $view->setClock(ClockRepository::findById($clockId));
+                $view->setUser($user);
+                ViewRepository::insert($view);
+
+                $views[] = $view;
+            }
+        }
 
         foreach ($views as $view) {
             $this->clocks[] = $view->getClock();
@@ -108,11 +125,13 @@ class Homepage {
         }
 
         $timezoneOptions = '';
-        $timezones = TimezoneRepository::findAll();
+        $timezones = TimezoneRepository::query(
+            "SELECT * FROM (SELECT * FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_OFFSET . " LIKE '%-%' ORDER BY " . Timezone::COL_OFFSET . " DESC) neg UNION SELECT * FROM (SELECT * FROM ". Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_OFFSET . " LIKE '%+%' ORDER BY " . Timezone::COL_OFFSET . ") pos"
+        );
         foreach($timezones as $timezone) {
             $timezoneOptions .= $timezone->toOption();
         }
-        
+
         return HtmlTemplate::getTemplate('content', array(
             'target'            => $_SERVER['REDIRECT_URL'],
             'tiles'             => $tiles,

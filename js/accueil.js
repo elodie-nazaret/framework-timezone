@@ -1,6 +1,11 @@
+function updateClockSvg(svg, date) {
+    svg.find('.second-hand').attr('transform', 'rotate(' + ((180 + date.seconds() / 60 * 360) % 360) + ' 80, 80)');
+    svg.find('.minute-hand').attr('transform', 'rotate(' + ((180 + date.minutes() / 60 * 360) % 360) + ' 80, 80)');
+    svg.find('.hour-hand').attr('transform', 'rotate(' + ((180 + (date.hours() + date.minutes() / 60) / 12 * 360 ) % 360) + ' 80, 80)');
+}
+
 function updateClock(clockDiv) {
     var date = moment.tz(moment(), $(clockDiv).find('.clock-timezone').text());
-    var svg = $(clockDiv).find('svg');
 
     var hour = date.hours();
     var color = '';
@@ -23,23 +28,33 @@ function updateClock(clockDiv) {
         color = '#413D93';
     }
 
-    svg.find('.second-hand').attr('transform', 'rotate(' + ((180 + date.seconds() / 60 * 360) % 360) + ' 80, 80)');
-    svg.find('.minute-hand').attr('transform', 'rotate(' + ((180 + date.minutes() / 60 * 360) % 360) + ' 80, 80)');
-    svg.find('.hour-hand').attr('transform', 'rotate(' + ((180 + (date.hours() + date.minutes() / 60) / 12 * 360 ) % 360) + ' 80, 80)');
+    updateClockSvg($(clockDiv).find('svg'), date);
 
     $(clockDiv).css('background-color', color);
     $(clockDiv).find('.clock-date').text(date.format('dddd, MMMM DD, YYYY'));
     $(clockDiv).find('.clock-ampm').text(date.format('A'));
 
-    $(clockDiv).find('.clock-digital-second').text(date.format('ss'));
-    $(clockDiv).find('.clock-digital-minute').text(date.format('mm'));
-    $(clockDiv).find('.clock-digital-hour').text(date.format('HH'));
+    $(clockDiv).find('.clock-digital').text(date.format('HH') + ':' + date.format('mm') + ':' + date.format('ss'));
+    //$(clockDiv).find('.clock-digital-second').text(date.format('ss'));
+    //$(clockDiv).find('.clock-digital-minute').text(date.format('mm'));
+    //$(clockDiv).find('.clock-digital-hour').text(date.format('HH'));
+}
+
+function updateDetailClock() {
+    var modal = $('#modal-details');
+
+    if ($(modal).is(':visible')) {
+        var date = moment.tz(moment(), $(modal).find('.detail-timezone').text());
+        updateClockSvg($(modal).find('.detail-clock svg'), date);
+    }
 }
 
 function updateClocks() {
     $('.clock').each(function() {
         updateClock(this);
     });
+
+    updateDetailClock();
     setTimeout("updateClocks()", 1000);
 }
 
@@ -50,7 +65,7 @@ $(function () {
         tolerance: 'pointer',
         stop: function(event, ui) {
             $.ajax({
-                url: './update_order.php',
+                url: 'update_order',
                 data: {
                     clockOrder: $(ui.item).index() + 1,
                     clockId: $(ui.item).find('.clock-id').text()
@@ -99,7 +114,7 @@ $(function () {
             var clock = $(this);
             $.ajax({
                 type : 'POST',
-                url : 'weather_ajax.php',
+                url : 'weather_ajax',
                 dataType: 'JSON',
                 data : { city : clock.find('.clock-city').text(), country : clock.find('.clock-country').text()},
                 success : function(data){
@@ -136,20 +151,17 @@ $(function () {
         $('#modal-create-clock').modal('show');
     });
 
-    $('#search').keyup( function() {
+    $('#search').keyup( function() {a
         var fieldValue = $(this).val().toLowerCase();
 
         $('#results>div').show();
         $('#results h4').each(function() {
-
             var text = $(this).text().toLowerCase().split(', ');
 
             if (text[0].indexOf(fieldValue) == -1 && text[1].indexOf(fieldValue) == -1) {
                 $(this).parent().parent().parent().hide();
             }
-
         });
-
     });
 
     $('[data-toggle="tooltip"]').tooltip()
@@ -159,7 +171,7 @@ $(function () {
 
         $.ajax({
             type : 'POST',
-            url : 'weather_ajax.php',
+            url : 'weather_ajax',
             dataType: 'JSON',
             data : { city : clock.find('.clock-city').text(), country : clock.find('.clock-country').text()},
             success : function(data){
@@ -175,10 +187,12 @@ $(function () {
         $('.detail-country').text(clock.find('.clock-country').text());
         $('.detail-date').text(clock.find('.clock-date').text());
         $('.detail-timezone-offset').text(clock.find('.clock-timezone-offset').text());
+        $('.detail-timezone').text(clock.find('.clock-timezone').text());
         $('.detail-temp-current').text('Température actuelle : ' + clock.find('.clock-temp').text());
         $('.detail-weather').html('Météo : ' + clock.find('.clock-weather').html());
         //$('.detail-clock').html(clock.find('.clock-clock>svg').html());
         //$('.detail-clock').html('');
+        $('.detail-clock').html(clock.find('.clock-clock>svg').clone().show());
         //$('.clock-clock>svg').clone().appendTo('.detail-clock');
 
         $('#modal-details-content').css('background-color', clock.css('background-color'));

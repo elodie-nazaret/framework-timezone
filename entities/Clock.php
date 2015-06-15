@@ -144,7 +144,8 @@ class Clock
 
         $meteoIcon   = $weather->getIcon();
         $temperature = $weather->getCurrentTemp();
-        
+//        $meteoIcon   = "";
+//        $temperature = "";
         return HtmlTemplate::getTemplate('clockTile', array(
             'clockId'       => $this->id,
             'townName'      => $this->town,

@@ -112,4 +112,11 @@ class Connection {
     {
         return $this->user;
     }
+
+    public function disconnect()
+    {
+        unset($_SESSION['id']);
+        $this->user = null;
+        $this->connected = false;
+    }
 }

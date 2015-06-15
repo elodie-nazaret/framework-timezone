@@ -21,34 +21,36 @@ class Controller
      */
     public function updateOrder()
     {
-        $clockId    = (int) $_POST['clockId'];
-        $clockOrder = (int) $_POST['clockOrder'];
-        $user       = Connection::getInstance()->getUser();
-        $actualView = null;
+        if (Connection::getInstance()->isConnected()) {
+            $clockId    = (int) $_POST['clockId'];
+            $clockOrder = (int) $_POST['clockOrder'];
+            $user       = Connection::getInstance()->getUser();
+            $actualView = null;
 
-        foreach ($user->getViews() as $view) {
-            if ($view->getClock()->getId() == $clockId) {
-                $actualView = $view;
-                break;
+            foreach ($user->getViews() as $view) {
+                if ($view->getClock()->getId() == $clockId) {
+                    $actualView = $view;
+                    break;
+                }
             }
-        }
 
-        $minOrder   = min($clockOrder, $actualView->getOrder());
-        $maxOrder   = max($clockOrder, $actualView->getOrder());
-        $way        = ($clockOrder < $actualView->getOrder() ? '+' : '-');
+            $minOrder   = min($clockOrder, $actualView->getOrder());
+            $maxOrder   = max($clockOrder, $actualView->getOrder());
+            $way        = ($clockOrder < $actualView->getOrder() ? '+' : '-');
 
-        foreach ($user->getViews() as $view) {
-            var_dump($view->getClock()->getTown());
-            if (
-                ($way == '+' && $view->getOrder() >= $minOrder && $view->getOrder() < $maxOrder)
-                || ($way == '-' && $view->getOrder() > $minOrder && $view->getOrder() <= $maxOrder)
-            ) {
-                $view->setOrder((int)eval('return (' . $view->getOrder() . $way . '1);'));
+            foreach ($user->getViews() as $view) {
+                if (
+                    ($way == '+' && $view->getOrder() >= $minOrder && $view->getOrder() < $maxOrder)
+                    || ($way == '-' && $view->getOrder() > $minOrder && $view->getOrder() <= $maxOrder)
+                ) {
+                    $view->setOrder((int)eval('return (' . $view->getOrder() . $way . '1);'));
+                    ViewRepository::update($view);
+                }
             }
-        }
 
-        $actualView->setOrder($clockOrder);
-        ViewRepository::update($actualView);
+            $actualView->setOrder($clockOrder);
+            ViewRepository::update($actualView);
+        }
     }
 
     public function gestion()

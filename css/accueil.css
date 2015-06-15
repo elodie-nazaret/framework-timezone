@@ -60,18 +60,19 @@ body {
     right: 20%;
     bottom: 5px;
     height: 80%;
+    left: 15%;
 }
 
 .clock-list>.clock-clock {
-right: 10%;
-height: 90%;
-bottom: 5%;
+    right: 10%;
+    height: 90%;
+    bottom: 5%;
+    width: 40%;
 }
 
 .clock-clock>.clock-digital {
     font-family: ds-digi;
     display: none;
     margin-top: 20%;
-    margin-left: -25%;
     font-size: 4.5em;
 }
