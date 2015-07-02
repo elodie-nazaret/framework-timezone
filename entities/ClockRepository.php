@@ -1,10 +1,12 @@
 <?php
-namespace timezone\entities;
+namespace Timezone\Entities;
 
 use PDO;
-use timezone\connection\pdo_connection;
+use Timezone\Services\MySqlConnection;
+use Framework\Entities\Repository;
 
-class ClockRepository implements InterfaceRepository
+
+class ClockRepository implements Repository
 {
     private static $clocks = array();
     /**
@@ -17,7 +19,7 @@ class ClockRepository implements InterfaceRepository
             return self::$clocks[$id];
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Clock::TABLE_CLOCK . " WHERE " . Clock::COL_ID . " = :id");
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Clock::TABLE_CLOCK . " WHERE " . Clock::COL_ID . " = :id");
 
         $query->execute(array(
             ':id' => $id
@@ -49,7 +51,7 @@ class ClockRepository implements InterfaceRepository
 
 //        debug_print_backtrace();
 //        echo '<br /><br /><br />';
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Clock::TABLE_CLOCK . " WHERE " . implode(' AND ', $where));
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Clock::TABLE_CLOCK . " WHERE " . implode(' AND ', $where));
         $query->execute($values);
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -67,7 +69,7 @@ class ClockRepository implements InterfaceRepository
      */
     public static function findAll()
     {
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Clock::TABLE_CLOCK);
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Clock::TABLE_CLOCK);
         $query->execute();
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -88,10 +90,10 @@ class ClockRepository implements InterfaceRepository
     public static function insert($clock)
     {
         if ($clock instanceof Clock) {
-            $query = pdo_connection::getPdo()->prepare("INSERT INTO " . Clock::TABLE_CLOCK . "(" . Clock::COL_TOWN . ", " . Clock::COL_COUNTRY . ", " . Clock::COL_TIMEZONE . ") VALUES (:town, :country, :timezone)");
+            $query = MySqlConnection::getPdo()->prepare("INSERT INTO " . Clock::TABLE_CLOCK . "(" . Clock::COL_TOWN . ", " . Clock::COL_COUNTRY . ", " . Clock::COL_TIMEZONE . ") VALUES (:town, :country, :timezone)");
 
-            if ($query->execute(array(':town' => $clock->getTown(),':country'  => $clock->getCountry()->getId(),':timezone' => $clock->getTimezone()->getId()))) {
-                $clock->setId((int) pdo_connection::getPdo()->lastInsertId());
+            if ($query->execute(array(':town' => $clock->getTown(), ':country'  => $clock->getCountry()->getId(), ':timezone' => $clock->getTimezone()->getId()))) {
+                $clock->setId((int) MySqlConnection::getPdo()->lastInsertId());
 
                 return true;
             }
@@ -108,7 +110,7 @@ class ClockRepository implements InterfaceRepository
     public static function update($clock)
     {
         if ($clock instanceof Clock) {
-            $query = pdo_connection::getPdo()->prepare("UPDATE " . Clock::TABLE_CLOCK . " SET " . Clock::COL_TOWN . " = :town, " . Clock::COL_COUNTRY . " = :country, " . Clock::COL_TIMEZONE . " = :timezone WHERE " . Clock::COL_ID . " = :id");
+            $query = MySqlConnection::getPdo()->prepare("UPDATE " . Clock::TABLE_CLOCK . " SET " . Clock::COL_TOWN . " = :town, " . Clock::COL_COUNTRY . " = :country, " . Clock::COL_TIMEZONE . " = :timezone WHERE " . Clock::COL_ID . " = :id");
 
             return $query->execute(array(
                 ':town'     => $clock->getTown(),
@@ -128,7 +130,7 @@ class ClockRepository implements InterfaceRepository
     public static function delete($clock)
     {
         if ($clock instanceof Clock) {
-            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . Clock::TABLE_CLOCK . " WHERE " . Clock::COL_ID . " = :id");
+            $query = MySqlConnection::getPdo()->prepare("DELETE FROM " . Clock::TABLE_CLOCK . " WHERE " . Clock::COL_ID . " = :id");
 
             return $query->execute(array(
                 ':id'       => $clock->getId()

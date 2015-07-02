@@ -1,13 +1,14 @@
 <?php
-namespace timezone\entities;
+namespace Timezone\Entities;
 
-use timezone\Weather;
-use timezone\HtmlTemplate;
+use Framework\Entities\Entity;
+use Framework\HtmlTemplate;
+use Timezone\Services\Weather;
 
 /**
  * Class Clock
  */
-class Clock
+class Clock extends Entity
 {
     private $id;
     private $town;

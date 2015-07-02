@@ -1,20 +1,21 @@
 <?php
 
-namespace timezone;
+namespace Timezone\Controllers;
 
-use timezone\connection\pdo_connection;
-use timezone\entities\Clock;
-use timezone\entities\ClockRepository;
-use timezone\entities\CountryRepository;
-use timezone\entities\Timezone;
-use timezone\entities\TimezoneRepository;
-use timezone\entities\View;
-use timezone\entities\ViewRepository;
+use Timezone\Entities\Clock;
+use Timezone\Entities\ClockRepository;
+use Timezone\Entities\CountryRepository;
+use Timezone\Entities\TimezoneRepository;
+use Timezone\Entities\View;
+use Timezone\Entities\ViewRepository;
+use Framework\Controllers\Controller;
+use Timezone\Services\Connection;
+use Timezone\Services\Weather;
 
 /**
  * Class Controller
  */
-class Controller
+class AjaxController extends Controller
 {
     /**
      * updateOrder

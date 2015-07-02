@@ -1,10 +1,11 @@
 <?php
-namespace timezone\entities;
+namespace Timezone\Entities;
 
 use PDO;
-use timezone\connection\pdo_connection;
+use Timezone\Services\MySqlConnection;
+use Framework\Entities\Repository;
 
-class ViewRepository implements InterfaceRepository
+class ViewRepository implements Repository
 {
     private static $views = array();
 
@@ -18,7 +19,7 @@ class ViewRepository implements InterfaceRepository
             return self::$views[$id];
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " = :id");
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " = :id");
 
         $query->execute(array(
             ':id' =>$id
@@ -48,7 +49,7 @@ class ViewRepository implements InterfaceRepository
             }
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW . " WHERE " . implode(' AND ', $where));
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW . " WHERE " . implode(' AND ', $where));
         $query->execute($values);
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -66,7 +67,7 @@ class ViewRepository implements InterfaceRepository
      */
     public static function findAll()
     {
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW);
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . View::TABLE_VIEW);
         $query->execute();
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -87,10 +88,10 @@ class ViewRepository implements InterfaceRepository
     public static function insert($view)
     {
         if ($view instanceof View) {
-            $query = pdo_connection::getPdo()->prepare("INSERT INTO " . View::TABLE_VIEW . "(" . View::COL_CLOCK . ", " . View::COL_ORDER . ", " . View::COL_USER .") VALUES (:clock, :orderView, :userId)");
+            $query = MySqlConnection::getPdo()->prepare("INSERT INTO " . View::TABLE_VIEW . "(" . View::COL_CLOCK . ", " . View::COL_ORDER . ", " . View::COL_USER .") VALUES (:clock, :orderView, :userId)");
 
             if ($query->execute(array(':clock' => $view->getClock()->getId(), ':orderView' => $view->getOrder(), ':userId' => $view->getUser()->getId()))) {
-                $view->setId((int) pdo_connection::getPdo()->lastInsertId());
+                $view->setId((int) MySqlConnection::getPdo()->lastInsertId());
 
                 return true;
             }
@@ -107,7 +108,7 @@ class ViewRepository implements InterfaceRepository
     public static function update($view)
     {
         if ($view instanceof View) {
-            $query = pdo_connection::getPdo()->prepare("UPDATE " . View::TABLE_VIEW . " SET " . View::COL_CLOCK . " = :clock, " . View::COL_ORDER . " = :orderView, " . View::COL_USER . " = :userId WHERE " . View::COL_ID . " = :id");
+            $query = MySqlConnection::getPdo()->prepare("UPDATE " . View::TABLE_VIEW . " SET " . View::COL_CLOCK . " = :clock, " . View::COL_ORDER . " = :orderView, " . View::COL_USER . " = :userId WHERE " . View::COL_ID . " = :id");
 
             return $query->execute(array(
                 ':clock'     => $view->getClock()->getId(),
@@ -138,7 +139,7 @@ class ViewRepository implements InterfaceRepository
         }
 
         if (!empty($toDelete)) {
-            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " IN (" .  implode(", ", $toDelete) . ")");
+            $query = MySqlConnection::getPdo()->prepare("DELETE FROM " . View::TABLE_VIEW . " WHERE " . View::COL_ID . " IN (" .  implode(", ", $toDelete) . ")");
             return $query->execute();
         }
 

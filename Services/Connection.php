@@ -1,8 +1,8 @@
 <?php
-namespace timezone;
+namespace Timezone\Services;
 
-use timezone\entities\User;
-use timezone\entities\UserRepository;
+use Timezone\Entities\User;
+use Timezone\Entities\UserRepository;
 
 session_start();
 

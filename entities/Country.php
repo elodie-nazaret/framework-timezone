@@ -1,10 +1,12 @@
 <?php
-namespace timezone\entities;
+namespace Timezone\Entities;
+
+use Framework\Entities\Entity;
 
 /**
  * Class Country
  */
-class Country
+class Country extends Entity
 {
     private $id;
     private $name;
