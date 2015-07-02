@@ -18,7 +18,7 @@ use Timezone\Services\Weather;
 class AjaxController extends Controller
 {
     /**
-     * updateOrder
+     * Used to update the order of clocks for the displaying
      */
     public function updateOrder()
     {
@@ -54,6 +54,9 @@ class AjaxController extends Controller
         }
     }
 
+    /**
+     * Used to display only the clocks the user wants thanks to the checkboxes
+     */
     public function gestion()
     {
         $user = Connection::getInstance()->getUser();
@@ -77,23 +80,29 @@ class AjaxController extends Controller
         }
     }
 
+    /**
+     * @return string
+     */
     public function getWeather()
     {
-        $city = $_POST['city'];
+        $city    = $_POST['city'];
         $country = $_POST['country'];
         $weather = new Weather($city, $country);
 
         return json_encode(array(
             'humidity' => $weather->getHumidity(),
             'pressure' => $weather->getPressure(),
-            'minTemp' => $weather->getMinTemp(),
-            'maxTemp' => $weather->getMaxTemp(),
-            'wind' => $weather->getWind(),
-            'icon' => $weather->getIcon(),
-            'temp' => $weather->getCurrentTemp()
+            'minTemp'  => $weather->getMinTemp(),
+            'maxTemp'  => $weather->getMaxTemp(),
+            'wind'     => $weather->getWind(),
+            'icon'     => $weather->getIcon(),
+            'temp'     => $weather->getCurrentTemp()
         ));
     }
 
+    /**
+     * The user can create a clock that is not predefined
+     */
     public function createClock()
     {
         if (isset($_POST['city']) && !empty($_POST['city']) && isset($_POST['country']) && !empty($_POST['country']) && isset($_POST['timezone']) && !empty($_POST['timezone'])) {

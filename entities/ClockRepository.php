@@ -1,14 +1,18 @@
 <?php
+
 namespace Timezone\Entities;
 
 use PDO;
 use Timezone\Services\MySqlConnection;
 use Framework\Entities\Repository;
 
-
+/**
+ * Class ClockRepository
+ */
 class ClockRepository implements Repository
 {
     private static $clocks = array();
+
     /**
      * @param int $id
      * @return Clock
@@ -49,8 +53,6 @@ class ClockRepository implements Repository
             }
         }
 
-//        debug_print_backtrace();
-//        echo '<br /><br /><br />';
         $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Clock::TABLE_CLOCK . " WHERE " . implode(' AND ', $where));
         $query->execute($values);
 
@@ -144,7 +146,8 @@ class ClockRepository implements Repository
      * @param array $result
      * @return Clock
      */
-    private static function createClock($result) {
+    private static function createClock($result)
+    {
         if (isset(self::$clocks[$result[Clock::COL_ID]])) {
             return self::$clocks[$result[Clock::COL_ID]];
         }

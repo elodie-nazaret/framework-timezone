@@ -2,7 +2,11 @@
 
 namespace Framework\Entities;
 
-interface Repository {
+/**
+ * Interface Repository
+ */
+interface Repository
+{
 
     /**
      * @param int $id

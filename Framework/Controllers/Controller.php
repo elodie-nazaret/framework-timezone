@@ -2,7 +2,10 @@
 
 namespace Framework\Controllers;
 
-
-abstract class Controller {
+/**
+ * Class Controller
+ */
+abstract class Controller
+{
 
 }

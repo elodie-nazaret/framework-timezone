@@ -1,13 +1,16 @@
 <?php
+
 namespace Timezone\Entities;
 
 use PDO;
 use Timezone\Services\MySqlConnection;
 use Framework\Entities\Repository;
 
+/**
+ * Class UserRepository
+ */
 class UserRepository implements Repository
 {
-
     private static $users = array();
 
     /**

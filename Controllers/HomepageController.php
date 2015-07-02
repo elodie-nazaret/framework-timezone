@@ -14,9 +14,12 @@ use Timezone\Entities\View;
 use Timezone\Entities\ViewRepository;
 use Timezone\Services\Connection;
 
+/**
+ * Class HomepageController
+ */
 class HomepageController extends Controller
 {
-    const BASE_CLOCKS = [1,2,3];
+    const BASE_CLOCKS = '1,2,3';
 
     /* @var $clocks Clock[] */
     private $clocks;
@@ -33,9 +36,12 @@ class HomepageController extends Controller
         }
     }
 
+    /**
+     * Even if the user is not connected, we display clocks that are defined by us
+     */
     private function addBaseClocks()
     {
-        foreach (HomepageController::BASE_CLOCKS as $clockId){
+        foreach (explode(',', HomepageController::BASE_CLOCKS) as $clockId){
             $this->clocks[] = ClockRepository::findById($clockId);
         }
     }
@@ -49,7 +55,7 @@ class HomepageController extends Controller
 
         if (empty($views)) {
             $order = 0;
-            foreach (HomepageController::BASE_CLOCKS as $clockId) {
+            foreach (explode(',', HomepageController::BASE_CLOCKS) as $clockId) {
                 $view = new View(0, ++$order);
                 $view->setClock(ClockRepository::findById($clockId));
                 $view->setUser($user);
@@ -106,7 +112,7 @@ class HomepageController extends Controller
     private function getClockSearchItemsHtml()
     {
         $clockSearchItems = '';
-        $clocks = ClockRepository::findAll();
+        $clocks           = ClockRepository::findAll();
         foreach ($clocks as $clock) {
             $clockSearchItems .= $clock->toSearchItem(in_array($clock, $this->clocks));
         }
@@ -120,7 +126,7 @@ class HomepageController extends Controller
     private function getCountryOptionsHtml()
     {
         $countryOptions = '';
-        $countries = CountryRepository::findAll();
+        $countries      = CountryRepository::findAll();
         foreach($countries as $country) {
             $countryOptions .= $country->toOption();
         }
@@ -134,7 +140,7 @@ class HomepageController extends Controller
     private function getTimezoneOptionsHtml()
     {
         $timezoneOptions = '';
-        $timezones = TimezoneRepository::query(
+        $timezones       = TimezoneRepository::query(
             "SELECT * FROM (SELECT * FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_OFFSET . " LIKE '%-%' ORDER BY " . Timezone::COL_OFFSET . " DESC) neg UNION SELECT * FROM (SELECT * FROM ". Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_OFFSET . " LIKE '%+%' ORDER BY " . Timezone::COL_OFFSET . ") pos"
         );
         foreach($timezones as $timezone) {

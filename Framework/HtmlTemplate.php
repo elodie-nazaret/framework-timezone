@@ -4,7 +4,6 @@ namespace Framework;
 
 /**
  * Class HtmlTemplate
- * @package timezone
  */
 class HtmlTemplate {
 

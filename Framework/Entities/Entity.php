@@ -2,7 +2,10 @@
 
 namespace Framework\Entities;
 
-
-abstract class Entity {
+/**
+ * Class Entity
+ */
+abstract class Entity
+{
 
 }

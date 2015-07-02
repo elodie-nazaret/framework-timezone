@@ -1,13 +1,18 @@
 <?php
+
 namespace Timezone\Entities;
 
 use PDO;
 use Timezone\Services\MySqlConnection;
 use Framework\Entities\Repository;
 
+/**
+ * Class CountryRepository
+ */
 class CountryRepository implements Repository
 {
     private static $countries = array();
+
     /**
      * @param int $id
      * @return Country

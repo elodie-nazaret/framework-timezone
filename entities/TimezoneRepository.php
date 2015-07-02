@@ -1,10 +1,14 @@
 <?php
+
 namespace Timezone\Entities;
 
 use PDO;
 use Timezone\Services\MySqlConnection;
 use Framework\Entities\Repository;
 
+/**
+ * Class TimezoneRepository
+ */
 class TimezoneRepository implements Repository
 {
     private static $timezones = array();
@@ -80,6 +84,11 @@ class TimezoneRepository implements Repository
         return $timezones;
     }
 
+    /**
+     * @param $queryString
+     *
+     * @return array
+     */
     public static function query($queryString)
     {
         $query = MySqlConnection::getPdo()->prepare($queryString);
