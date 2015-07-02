@@ -1,4 +1,5 @@
 <?php
+
 namespace Timezone\Entities;
 
 use Framework\Entities\Entity;
@@ -137,6 +138,8 @@ class Clock extends Entity
     }
 
     /**
+     * Transforms the clock to a tile that is displayed in the homepage
+     *
      * @return string
      */
     public function toTile()
@@ -145,8 +148,7 @@ class Clock extends Entity
 
         $meteoIcon   = $weather->getIcon();
         $temperature = $weather->getCurrentTemp();
-//        $meteoIcon   = "";
-//        $temperature = "";
+
         return HtmlTemplate::getTemplate('clockTile', array(
             'clockId'       => $this->id,
             'townName'      => $this->town,
@@ -160,7 +162,10 @@ class Clock extends Entity
 
 
     /**
+     * Transforms the clock like a checkbox to know if the user wants to display it or not
+     *
      * @param bool $isChecked
+     *
      * @return string
      */
     public function toSearchItem($isChecked = false)

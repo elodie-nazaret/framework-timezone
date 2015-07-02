@@ -1,10 +1,14 @@
 <?php
+
 namespace Timezone\Entities;
 
 use PDO;
 use Timezone\Services\MySqlConnection;
 use Framework\Entities\Repository;
 
+/**
+ * Class ViewRepository
+ */
 class ViewRepository implements Repository
 {
     private static $views = array();
@@ -36,7 +40,7 @@ class ViewRepository implements Repository
      */
     public static function findBy(array $parameters)
     {
-        $where = array();
+        $where  = array();
         $values = array();
 
         foreach ($parameters as $key => $value) {
@@ -53,7 +57,7 @@ class ViewRepository implements Repository
         $query->execute($values);
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
-        $views = array();
+        $views   = array();
 
         foreach ($results as $result) {
             $views[] = self::createView($result);
@@ -71,7 +75,7 @@ class ViewRepository implements Repository
         $query->execute();
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
-        $views = array();
+        $views   = array();
 
         foreach ($results as $result) {
             $views[] = self::createView($result);

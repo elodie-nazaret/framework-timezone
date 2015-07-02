@@ -1,4 +1,5 @@
 <?php
+
 namespace Timezone\Services;
 
 use Timezone\Entities\User;
@@ -9,7 +10,8 @@ session_start();
 /**
  * Class Connection
  */
-class Connection {
+class Connection
+{
     private $connected;
     private $user;
 
@@ -38,6 +40,7 @@ class Connection {
             $this->processPost();
         }
     }
+
 
     public function processPost()
     {
@@ -120,3 +123,4 @@ class Connection {
         $this->connected = false;
     }
 }
+

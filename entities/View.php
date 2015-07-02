@@ -1,5 +1,7 @@
 <?php
+
 namespace Timezone\Entities;
+
 use Framework\Entities\Entity;
 
 /**

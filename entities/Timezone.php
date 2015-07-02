@@ -1,4 +1,5 @@
 <?php
+
 namespace Timezone\Entities;
 
 use Framework\Entities\Entity;
@@ -113,6 +114,8 @@ class Timezone extends Entity
     }
 
     /**
+     * Transforms the timezone to a html select option
+     *
      * @return string
      */
     function toOption()

@@ -6,9 +6,11 @@ use Timezone\Controllers\AjaxController;
 use Timezone\Controllers\HomepageController;
 use Timezone\Services\Connection;
 
+/**
+ * Class Rooter
+ */
 class Rooter
 {
-
     public function __construct()
     {
         switch ($_GET['url']) {

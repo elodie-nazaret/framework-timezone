@@ -45,6 +45,8 @@ class Weather
     {
         if ($this->getWeather())
             return '<img src="' . self::BASE_API_IMG . $this->weather['weather'][0]['icon'] . '.png" alt="Météo" title="Météo"/>';
+
+        return '';
     }
 
     /**
@@ -54,6 +56,8 @@ class Weather
     {
         if ($this->getWeather())
             return round($this->weather['main']['temp'] - 273.15, 1) . ' °C';
+
+        return '';
     }
 
     /**
@@ -63,6 +67,8 @@ class Weather
     {
         if ($this->getWeather())
             return $this->weather['main']['humidity'] . '%';
+
+        return '';
     }
 
     /**
@@ -72,6 +78,8 @@ class Weather
     {
         if ($this->getWeather())
             return $this->weather['main']['pressure'] . ' hPa';
+
+        return '';
     }
 
     /**
@@ -81,6 +89,8 @@ class Weather
     {
         if ($this->getWeather())
             return round($this->weather['main']['temp_min'] - 273.15, 1) . ' °C';
+
+        return '';
     }
 
     /**
@@ -90,6 +100,8 @@ class Weather
     {
         if ($this->getWeather())
             return round($this->weather['main']['temp_max'] - 273.15, 1) . ' °C';
+
+        return '';
     }
 
     /**
@@ -99,6 +111,8 @@ class Weather
     {
         if ($this->getWeather())
             return round($this->weather['wind']['speed'] * 3.6, 2) . ' km/h';
+
+        return '';
     }
 
     /**

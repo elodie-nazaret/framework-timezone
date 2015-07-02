@@ -1,4 +1,5 @@
 <?php
+
 namespace Timezone\Entities;
 
 use Framework\Entities\Entity;
@@ -93,6 +94,8 @@ class Country extends Entity
     }
 
     /**
+     * Transforms the country to a html select option
+     *
      * @return string
      */
     public function toOption()
