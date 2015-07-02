@@ -69,69 +69,70 @@ class HomepageController extends Controller
      */
     public function toHtml()
     {
-        $html = '<!DOCTYPE html>
-        <html>';
-
-        $html .= HtmlTemplate::getTemplate('head', array());
-        $html .= $this->generateBody();
-
-        $html .='</html>';
-
-        return $html;
+        return HtmlTemplate::getTemplate('homepage', array(
+            'header'            => $this->getHeader(),
+            'target'            => $_SERVER['REDIRECT_URL'],
+            'tiles'             => $this->getTilesHtml(),
+            'clockSearchItems'  => $this->getClockSearchItemsHtml(),
+            'countryOptions'    => $this->getCountryOptionsHtml(),
+            'timezoneOptions'   => $this->getTimezoneOptionsHtml(),
+            'script'            => Connection::getInstance()->isConnected() ? '' : '<script type="text/javascript" src="public/js/connection.js"></script>'
+        ));
     }
 
-    /**
-     * @return string
-     */
-    public function generateBody()
+    private function getHeader()
     {
-        $return = '<body>';
-
-        $return .= $this->generateHeader();
-        $return .= $this->generateContent();
-        $return .= $this->generateFooter();
-
-        $return .= '</body>';
-
-        return $return;
-    }
-
-    /**
-     * @return string
-     */
-    public function generateHeader()
-    {
-        $header = HtmlTemplate::getTemplate((Connection::getInstance()->isConnected() ? 'connectedHeader' : 'notConnectedHeader'), array(
+        return HtmlTemplate::getTemplate((Connection::getInstance()->isConnected() ? 'connectedHeader' : 'notConnectedHeader'), array(
             'target'    => $_SERVER['REDIRECT_URL']
         ));
-
-        return HtmlTemplate::getTemplate('header', array(
-            'header'    => $header
-        ));
     }
 
     /**
      * @return string
      */
-    private function generateContent()
+    private function getTilesHtml()
     {
         $tiles = '';
         foreach ($this->clocks as $clock) {
             $tiles .= $clock->toTile();
         }
 
+        return $tiles;
+    }
+
+    /**
+     * @return string
+     */
+    private function getClockSearchItemsHtml()
+    {
         $clockSearchItems = '';
         $clocks = ClockRepository::findAll();
         foreach ($clocks as $clock) {
             $clockSearchItems .= $clock->toSearchItem(in_array($clock, $this->clocks));
         }
 
+        return $clockSearchItems;
+    }
+
+    /**
+     * @return string
+     */
+    private function getCountryOptionsHtml()
+    {
         $countryOptions = '';
         $countries = CountryRepository::findAll();
         foreach($countries as $country) {
             $countryOptions .= $country->toOption();
         }
 
+        return $countryOptions;
+    }
+
+    /**
+     * @return string
+     */
+    private function getTimezoneOptionsHtml()
+    {
         $timezoneOptions = '';
         $timezones = TimezoneRepository::query(
             "SELECT * FROM (SELECT * FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_OFFSET . " LIKE '%-%' ORDER BY " . Timezone::COL_OFFSET . " DESC) neg UNION SELECT * FROM (SELECT * FROM ". Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_OFFSET . " LIKE '%+%' ORDER BY " . Timezone::COL_OFFSET . ") pos"
@@ -140,22 +141,6 @@ class HomepageController extends Controller
             $timezoneOptions .= $timezone->toOption();
         }
 
-        return HtmlTemplate::getTemplate('content', array(
-            'target'            => $_SERVER['REDIRECT_URL'],
-            'tiles'             => $tiles,
-            'clockSearchItems'  => $clockSearchItems,
-            'countryOptions'    => $countryOptions,
-            'timezoneOptions'   => $timezoneOptions
-        ));
-    }
-
-    /**
-     * @return string
-     */
-    private function generateFooter()
-    {
-        return HtmlTemplate::getTemplate('footer', array(
-            'script' => Connection::getInstance()->isConnected() ? '' : '<script type="text/javascript" src="public/js/connection.js"></script>'
-        ));
+        return $timezoneOptions;
     }
 }

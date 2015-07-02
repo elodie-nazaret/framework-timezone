@@ -148,7 +148,7 @@ $(function () {
         $('#modal-create-clock').modal('show');
     });
 
-    $('#search').keyup( function() {a
+    $('#search').keyup( function() {
         var fieldValue = $(this).val().toLowerCase();
 
         $('#results>div').show();
