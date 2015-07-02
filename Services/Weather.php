@@ -1,6 +1,6 @@
 <?php
 
-namespace timezone;
+namespace Timezone\Services;
 
 /**
  * Class Weather

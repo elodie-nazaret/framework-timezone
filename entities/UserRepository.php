@@ -1,10 +1,11 @@
 <?php
-namespace timezone\entities;
+namespace Timezone\Entities;
 
 use PDO;
-use timezone\connection\pdo_connection;
+use Timezone\Services\MySqlConnection;
+use Framework\Entities\Repository;
 
-class UserRepository implements InterfaceRepository
+class UserRepository implements Repository
 {
 
     private static $users = array();
@@ -19,7 +20,7 @@ class UserRepository implements InterfaceRepository
             return self::$users[$id];
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . User::TABLE_USER . " WHERE " . User::COL_ID . " = :id");
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . User::TABLE_USER . " WHERE " . User::COL_ID . " = :id");
 
         $query->execute(array(
             ':id' =>$id
@@ -49,7 +50,7 @@ class UserRepository implements InterfaceRepository
             }
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . User::TABLE_USER . " WHERE " . implode(' AND ', $where));
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . User::TABLE_USER . " WHERE " . implode(' AND ', $where));
         $query->execute($values);
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -67,7 +68,7 @@ class UserRepository implements InterfaceRepository
      */
     public static function findAll()
     {
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . User::TABLE_USER);
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . User::TABLE_USER);
         $query->execute();
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -88,10 +89,10 @@ class UserRepository implements InterfaceRepository
     public static function insert($user)
     {
         if ($user instanceof User) {
-            $query = pdo_connection::getPdo()->prepare("INSERT INTO " . User::TABLE_USER . "(" . User::COL_LOGIN . ", " . User::COL_PASSWORD .") VALUES (:login, :password)");
+            $query = MySqlConnection::getPdo()->prepare("INSERT INTO " . User::TABLE_USER . "(" . User::COL_LOGIN . ", " . User::COL_PASSWORD .") VALUES (:login, :password)");
 
             if ($query->execute(array(':login' => $user->getLogin(), ':password' => $user->getPassword()))) {
-                $user->setId((int) pdo_connection::getPdo()->lastInsertId());
+                $user->setId((int) MySqlConnection::getPdo()->lastInsertId());
 
                 return true;
             }
@@ -108,7 +109,7 @@ class UserRepository implements InterfaceRepository
     public static function update($user)
     {
         if ($user instanceof User) {
-            $query = pdo_connection::getPdo()->prepare("UPDATE " . User::TABLE_USER . " SET " . User::COL_LOGIN . " = :login, " . User::COL_PASSWORD . " = :password WHERE " . User::COL_ID . " = :id");
+            $query = MySqlConnection::getPdo()->prepare("UPDATE " . User::TABLE_USER . " SET " . User::COL_LOGIN . " = :login, " . User::COL_PASSWORD . " = :password WHERE " . User::COL_ID . " = :id");
 
             return $query->execute(array(
                 ':login'    => $user->getLogin(),
@@ -127,7 +128,7 @@ class UserRepository implements InterfaceRepository
     public static function delete($user)
     {
         if ($user instanceof User) {
-            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . User::TABLE_USER . " WHERE " . User::COL_ID . " = :id");
+            $query = MySqlConnection::getPdo()->prepare("DELETE FROM " . User::TABLE_USER . " WHERE " . User::COL_ID . " = :id");
 
             return $query->execute(array(
                 ':id' => $user->getId()

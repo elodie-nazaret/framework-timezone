@@ -1,15 +1,13 @@
 <?php
 
-namespace timezone\entities;
+namespace Framework\Entities;
 
-use stdClass;
-
-interface InterfaceRepository {
+interface Repository {
 
     /**
      * @param int $id
      *
-     * @return mixed
+     * @return Entity
      */
     public static function findById($id);
 
@@ -26,21 +24,21 @@ interface InterfaceRepository {
     public static function findAll();
 
     /**
-     * @param $object
+     * @param Entity $object
      *
      * @return bool
      */
     public static function insert($object);
 
     /**
-     * @param $object
+     * @param Entity $object
      *
      * @return bool
      */
     public static function update($object);
 
     /**
-     * @param $object
+     * @param Entity $object
      *
      * @return bool
      */

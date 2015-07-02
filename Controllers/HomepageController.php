@@ -1,16 +1,21 @@
 <?php
-namespace timezone;
 
-use timezone\entities\Clock;
-use timezone\entities\ClockRepository;
-use timezone\entities\CountryRepository;
-use timezone\entities\Timezone;
-use timezone\entities\TimezoneRepository;
-use timezone\entities\User;
-use timezone\entities\View;
-use timezone\entities\ViewRepository;
+namespace Timezone\Controllers;
 
-class Homepage {
+use Framework\Controllers\Controller;
+use Framework\HtmlTemplate;
+use Timezone\Entities\Clock;
+use Timezone\Entities\ClockRepository;
+use Timezone\Entities\CountryRepository;
+use Timezone\Entities\Timezone;
+use Timezone\Entities\TimezoneRepository;
+use Timezone\Entities\User;
+use Timezone\Entities\View;
+use Timezone\Entities\ViewRepository;
+use Timezone\Services\Connection;
+
+class HomepageController extends Controller
+{
     const BASE_CLOCKS = [1,2,3];
 
     /* @var $clocks Clock[] */
@@ -30,7 +35,7 @@ class Homepage {
 
     private function addBaseClocks()
     {
-        foreach (Homepage::BASE_CLOCKS as $clockId){
+        foreach (HomepageController::BASE_CLOCKS as $clockId){
             $this->clocks[] = ClockRepository::findById($clockId);
         }
     }
@@ -44,7 +49,7 @@ class Homepage {
 
         if (empty($views)) {
             $order = 0;
-            foreach (Homepage::BASE_CLOCKS as $clockId) {
+            foreach (HomepageController::BASE_CLOCKS as $clockId) {
                 $view = new View(0, ++$order);
                 $view->setClock(ClockRepository::findById($clockId));
                 $view->setUser($user);
@@ -62,7 +67,8 @@ class Homepage {
     /**
      * @return string
      */
-    public function toHtml() {
+    public function toHtml()
+    {
         $html = '<!DOCTYPE html>
         <html>';
 
@@ -77,7 +83,8 @@ class Homepage {
     /**
      * @return string
      */
-    public function generateBody() {
+    public function generateBody()
+    {
         $return = '<body>';
 
         $return .= $this->generateHeader();
@@ -92,7 +99,8 @@ class Homepage {
     /**
      * @return string
      */
-    public function generateHeader() {
+    public function generateHeader()
+    {
         $header = HtmlTemplate::getTemplate((Connection::getInstance()->isConnected() ? 'connectedHeader' : 'notConnectedHeader'), array(
             'target'    => $_SERVER['REDIRECT_URL']
         ));
@@ -147,7 +155,7 @@ class Homepage {
     private function generateFooter()
     {
         return HtmlTemplate::getTemplate('footer', array(
-            'script' => Connection::getInstance()->isConnected() ? '' : '<script type="text/javascript" src="js/connection.js"></script>'
+            'script' => Connection::getInstance()->isConnected() ? '' : '<script type="text/javascript" src="public/js/connection.js"></script>'
         ));
     }
 }

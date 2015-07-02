@@ -1,10 +1,11 @@
 <?php
-namespace timezone\entities;
+namespace Timezone\Entities;
 
 use PDO;
-use timezone\connection\pdo_connection;
+use Timezone\Services\MySqlConnection;
+use Framework\Entities\Repository;
 
-class TimezoneRepository implements InterfaceRepository
+class TimezoneRepository implements Repository
 {
     private static $timezones = array();
 
@@ -18,7 +19,7 @@ class TimezoneRepository implements InterfaceRepository
             return self::$timezones[$id];
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_ID . " = :id");
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_ID . " = :id");
 
         $query->execute(array(
             ':id' =>$id
@@ -48,7 +49,7 @@ class TimezoneRepository implements InterfaceRepository
             }
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . implode(' AND ', $where));
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . implode(' AND ', $where));
         $query->execute($values);
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -66,7 +67,7 @@ class TimezoneRepository implements InterfaceRepository
      */
     public static function findAll()
     {
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Timezone::TABLE_TIMEZONE);
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Timezone::TABLE_TIMEZONE);
         $query->execute();
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -81,7 +82,7 @@ class TimezoneRepository implements InterfaceRepository
 
     public static function query($queryString)
     {
-        $query = pdo_connection::getPdo()->prepare($queryString);
+        $query = MySqlConnection::getPdo()->prepare($queryString);
         $query->execute();
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -102,10 +103,10 @@ class TimezoneRepository implements InterfaceRepository
     public static function insert($timezone)
     {
         if ($timezone instanceof Timezone) {
-            $query = pdo_connection::getPdo()->prepare("INSERT INTO " . Timezone::TABLE_TIMEZONE . "(" . Timezone::COL_NAME . ", " . Timezone::COL_OFFSET .") VALUES (:nameTimezone, :offset)");
+            $query = MySqlConnection::getPdo()->prepare("INSERT INTO " . Timezone::TABLE_TIMEZONE . "(" . Timezone::COL_NAME . ", " . Timezone::COL_OFFSET .") VALUES (:nameTimezone, :offset)");
 
             if ($query->execute(array(':nameTimezone' => $timezone->getName(), ':offset' => $timezone->getOffset()))) {
-                $timezone->setId((int) pdo_connection::getPdo()->lastInsertId());
+                $timezone->setId((int) MySqlConnection::getPdo()->lastInsertId());
 
                 return true;
             }
@@ -122,7 +123,7 @@ class TimezoneRepository implements InterfaceRepository
     public static function update($timezone)
     {
         if ($timezone instanceof Timezone) {
-            $query = pdo_connection::getPdo()->prepare("UPDATE " . Timezone::TABLE_TIMEZONE . " SET " . Timezone::COL_NAME . " = :nameTimezone, " . Timezone::COL_OFFSET . " = :offset WHERE " . Timezone::COL_ID . " = :id");
+            $query = MySqlConnection::getPdo()->prepare("UPDATE " . Timezone::TABLE_TIMEZONE . " SET " . Timezone::COL_NAME . " = :nameTimezone, " . Timezone::COL_OFFSET . " = :offset WHERE " . Timezone::COL_ID . " = :id");
 
             return $query->execute(array(
                 ':nameTimezone' => $timezone->getName(),
@@ -141,7 +142,7 @@ class TimezoneRepository implements InterfaceRepository
     public static function delete($timezone)
     {
         if ($timezone instanceof Timezone) {
-            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_ID . " = :id");
+            $query = MySqlConnection::getPdo()->prepare("DELETE FROM " . Timezone::TABLE_TIMEZONE . " WHERE " . Timezone::COL_ID . " = :id");
 
             return $query->execute(array(
                 ':id' => $timezone->getId()

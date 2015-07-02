@@ -1,9 +1,9 @@
 <?php
-namespace timezone\connection;
+namespace Timezone\Services;
 
 use PDO;
 
-class pdo_connection {
+class MySqlConnection {
     private static $pdo = null;
 
     /**

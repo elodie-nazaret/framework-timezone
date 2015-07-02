@@ -34,10 +34,7 @@ function updateClock(clockDiv) {
     $(clockDiv).find('.clock-date').text(date.format('dddd, MMMM DD, YYYY'));
     $(clockDiv).find('.clock-ampm').text(date.format('A'));
 
-    $(clockDiv).find('.clock-digital').text(date.format('HH') + ':' + date.format('mm') + ':' + date.format('ss'));
-    //$(clockDiv).find('.clock-digital-second').text(date.format('ss'));
-    //$(clockDiv).find('.clock-digital-minute').text(date.format('mm'));
-    //$(clockDiv).find('.clock-digital-hour').text(date.format('HH'));
+    $(clockDiv).find('.clock-digital').text(date.format('HH:mm:ss'));
 }
 
 function updateDetailClock() {

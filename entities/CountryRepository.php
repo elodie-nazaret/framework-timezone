@@ -1,10 +1,11 @@
 <?php
-namespace timezone\entities;
+namespace Timezone\Entities;
 
 use PDO;
-use timezone\connection\pdo_connection;
+use Timezone\Services\MySqlConnection;
+use Framework\Entities\Repository;
 
-class CountryRepository implements InterfaceRepository
+class CountryRepository implements Repository
 {
     private static $countries = array();
     /**
@@ -17,7 +18,7 @@ class CountryRepository implements InterfaceRepository
             return self::$countries[$id];
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Country::TABLE_COUNTRY . " WHERE " . Country::COL_ID . " = :id");
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Country::TABLE_COUNTRY . " WHERE " . Country::COL_ID . " = :id");
 
         $query->execute(array(
             ':id' =>$id
@@ -47,7 +48,7 @@ class CountryRepository implements InterfaceRepository
             }
         }
 
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Country::TABLE_COUNTRY . " WHERE " . implode(' AND ', $where));
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Country::TABLE_COUNTRY . " WHERE " . implode(' AND ', $where));
         $query->execute($values);
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -65,7 +66,7 @@ class CountryRepository implements InterfaceRepository
      */
     public static function findAll()
     {
-        $query = pdo_connection::getPdo()->prepare("SELECT * FROM " . Country::TABLE_COUNTRY);
+        $query = MySqlConnection::getPdo()->prepare("SELECT * FROM " . Country::TABLE_COUNTRY);
         $query->execute();
 
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -86,10 +87,10 @@ class CountryRepository implements InterfaceRepository
     public static function insert($country)
     {
         if ($country instanceof Country) {
-            $query = pdo_connection::getPdo()->prepare("INSERT INTO " . Country::TABLE_COUNTRY . "(" . Country::COL_NAME . ") VALUES (:nameCountry)");
+            $query = MySqlConnection::getPdo()->prepare("INSERT INTO " . Country::TABLE_COUNTRY . "(" . Country::COL_NAME . ") VALUES (:nameCountry)");
 
             if ($query->execute(array(':nameCountry' => $country->getName()))) {
-                $country->setId((int) pdo_connection::getPdo()->lastInsertId());
+                $country->setId((int) MySqlConnection::getPdo()->lastInsertId());
 
                 return true;
             }
@@ -106,7 +107,7 @@ class CountryRepository implements InterfaceRepository
     public static function update($country)
     {
         if ($country instanceof Country) {
-            $query = pdo_connection::getPdo()->prepare("UPDATE " . Country::TABLE_COUNTRY . " SET " . Country::COL_NAME . " = :nameCountry WHERE " . Country::COL_ID . " = :id");
+            $query = MySqlConnection::getPdo()->prepare("UPDATE " . Country::TABLE_COUNTRY . " SET " . Country::COL_NAME . " = :nameCountry WHERE " . Country::COL_ID . " = :id");
 
             return $query->execute(array(
                 ':nameCountry' => $country->getName(),
@@ -124,7 +125,7 @@ class CountryRepository implements InterfaceRepository
     public static function delete($country)
     {
         if ($country instanceof Country) {
-            $query = pdo_connection::getPdo()->prepare("DELETE FROM " . Country::TABLE_COUNTRY . " WHERE " . Country::COL_ID . " = :id");
+            $query = MySqlConnection::getPdo()->prepare("DELETE FROM " . Country::TABLE_COUNTRY . " WHERE " . Country::COL_ID . " = :id");
 
             return $query->execute(array(
                 ':id'       => $country->getId()

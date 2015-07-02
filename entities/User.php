@@ -1,10 +1,12 @@
 <?php
-namespace timezone\entities;
+namespace Timezone\Entities;
+
+use Framework\Entities\Entity;
 
 /**
  * Class User
  */
-class User
+class User extends Entity
 {
     private $id;
     private $login;
